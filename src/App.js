@@ -8,7 +8,6 @@ import NewErrorLog from './board/NewErrorLog';
 import Overview from './board/Overview';
 import SingleView from './board/SingleView';
 import ChatBot from './ChatBot';
-import Nav from './Nav';
 
 export default function App() {
   return (
