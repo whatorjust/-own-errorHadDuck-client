@@ -14,7 +14,6 @@ export default function App() {
   return (
     <Router>
       <div>
-        <Nav />
         <Switch>
           <Route path="/" exact component={Login} />
           <Route path="/signupsuccess" exact component={SignSuccess} />
