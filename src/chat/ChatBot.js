@@ -8,12 +8,14 @@ export default function ChatBot() {
     <div>
       <Nav />
 
-      <div />
+      <div>
+        <BotMsg />
+        <UserMsg />
+      </div>
 
       <div>
         <input type="text" />
-        <BotMsg />
-        <UserMsg />
+
         <button type="button">전송</button>
       </div>
       <div />
