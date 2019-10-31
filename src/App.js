@@ -7,7 +7,7 @@ import BoardList from './board/BoardList';
 import NewErrorLog from './board/NewErrorLog';
 import Overview from './board/Overview';
 import SingleView from './board/SingleView';
-import ChatBot from './ChatBot';
+import ChatBot from './chat/ChatBot';
 
 export default function App() {
   return (
