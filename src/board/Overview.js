@@ -1,5 +1,14 @@
 import React from 'react';
+import Nav from '../Nav';
+import BoardThumbNail from './BoardThumbNail';
 
 export default function Overview() {
-  return <div>ㄴㅏ는 오버뷰야</div>;
+  return (
+    <div>
+      <Nav />
+      <BoardThumbNail />
+      <BoardThumbNail />
+      <BoardThumbNail />
+    </div>
+  );
 }
