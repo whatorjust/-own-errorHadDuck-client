@@ -17,7 +17,7 @@ export default function Signup() {
         <input type="text" id="email" minLength="4" maxLength="8" size="10" />
       </p>
       <div>
-        <button>제출</button>
+        <button type="button">제출</button>
       </div>
     </div>
   );

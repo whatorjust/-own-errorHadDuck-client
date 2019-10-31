@@ -8,6 +8,7 @@
         "extensions": [".js", ".jsx"]
       }
     ],
+    "jsx-a11y/label-has-associated-control": "off",
     "react/prop-types": 0,
     "no-underscore-dangle": 0,
     "import/imports-first": ["error", "absolute-first"],
