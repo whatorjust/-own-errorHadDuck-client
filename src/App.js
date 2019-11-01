@@ -23,7 +23,7 @@ export default class App extends Component {
     const localid = JSON.parse(localStorage.getItem('userid'));
 
     if (userid === null && localid !== null) {
-      this.setState({ userid: localid.userid, isLogin: true });
+      this.setState({ userid: Number(localid), isLogin: true });
     }
   }
 
@@ -32,7 +32,10 @@ export default class App extends Component {
   }
 
   handleLogout() {
-    this.setState({ isLogin: false });
+    localStorage.setItem('userid', null);
+    localStorage.setItem('isLogin', false);
+
+    this.setState({ isLogin: false, userid: null });
   }
 
   render() {
