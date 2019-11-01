@@ -1,5 +1,12 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  useHistory,
+  Link
+} from 'react-router-dom';
+
 import Login from './sign/Login';
 import SignSuccess from './sign/SignSuccess';
 import Signup from './sign/Signup';
@@ -7,22 +14,31 @@ import BoardList from './board/BoardList';
 import Overview from './board/Overview';
 import SingleView from './board/SingleView';
 import ChatBot from './chat/ChatBot';
+import Nav from './Nav';
 
 export default class App extends Component {
   constructor(props) {
     super(props);
     this.state = { userid: null, isLogin: false };
     this.saveUserid = this.saveUserid.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
   }
 
   saveUserid(userid) {
     this.setState({ userid, isLogin: true });
   }
 
+  handleLogout() {
+    this.setState({ isLogin: false });
+  }
+
   render() {
     const { userid, isLogin } = this.state;
+
     return (
       <Router>
+        {isLogin && <Nav handleLogout={this.handleLogout} />}
+
         <div>
           <Switch>
             <Route
