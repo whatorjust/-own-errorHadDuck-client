@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function Nav() {
+export default function Nav({ handleLogout }) {
   return (
     <div>
       <div className="nametab">navigation</div>
@@ -23,6 +23,11 @@ export default function Nav() {
         </Link>
         <Link to="/chatbot">
           <button type="button">챗봇</button>
+        </Link>
+        <Link to="/">
+          <button type="button" onClick={handleLogout}>
+            로그아웃
+          </button>
         </Link>
       </div>
     </div>
