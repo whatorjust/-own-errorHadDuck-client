@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 
 // TODO: dotenv 적용
 // const path = require('path');
@@ -23,8 +24,6 @@ export default class Login extends Component {
     const { saveUserid } = this.props;
     // TODO: 미입력시 예외처리
 
-    // input 정보 받아오기
-
     const instance = axios.create({
       baseURL: 'http://13.125.254.202:5000',
       timeout: 1000
@@ -32,18 +31,10 @@ export default class Login extends Component {
 
     instance
       .post('/users/login', { username: idValue, password: pwdValue })
-      .then(({ status, data: { userid } }) => {
-        // 로그인 성공
-
-        if (status === 200) {
-          console.log(userid);
-          saveUserid(userid);
-
-          // 오버뷰로 이동
-        }
+      .then(({ data: { userid } }) => {
+        saveUserid(userid);
       })
       .catch(error => {
-        // TODO: handle error
         // 응답이 안좋으면 아이디가 틀린건지 비번이 틀린건지 보여준다
         console.log('err', error);
       });
@@ -51,33 +42,40 @@ export default class Login extends Component {
 
   render() {
     const { idValue, pwdValue } = this.state;
+    const { isLogin } = this.props;
 
     return (
       <div>
-        <div>
+        {isLogin ? (
+          <Redirect to="/overview" />
+        ) : (
           <div>
-            <span>ID</span>
-            <input
-              value={idValue}
-              type="text"
-              onChange={e => this.handleInputChange(e, 'idValue')}
-            />
+            <div>
+              <div>
+                <span>ID</span>
+                <input
+                  value={idValue}
+                  type="text"
+                  onChange={e => this.handleInputChange(e, 'idValue')}
+                />
+              </div>
+              <div>
+                <span>PWD</span>
+                <input
+                  value={pwdValue}
+                  type="password"
+                  onChange={e => this.handleInputChange(e, 'pwdValue')}
+                />
+              </div>
+              <div>
+                <button type="button" onClick={this.handleLoginBtn}>
+                  로그인
+                </button>
+                <button type="button">회원가입</button>
+              </div>
+            </div>
           </div>
-          <div>
-            <span>PWD</span>
-            <input
-              value={pwdValue}
-              type="password"
-              onChange={e => this.handleInputChange(e, 'pwdValue')}
-            />
-          </div>
-          <div>
-            <button type="button" onClick={this.handleLoginBtn}>
-              로그인
-            </button>
-            <button type="button">회원가입</button>
-          </div>
-        </div>
+        )}
       </div>
     );
   }

@@ -11,16 +11,16 @@ import ChatBot from './chat/ChatBot';
 export default class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { userid: null };
+    this.state = { userid: null, isLogin: false };
     this.saveUserid = this.saveUserid.bind(this);
   }
 
   saveUserid(userid) {
-    this.setState({ userid });
+    this.setState({ userid, isLogin: true });
   }
 
   render() {
-    const { userid } = this.state;
+    const { userid, isLogin } = this.state;
     return (
       <Router>
         <div>
@@ -28,7 +28,9 @@ export default class App extends Component {
             <Route
               path="/"
               exact
-              component={() => <Login saveUserid={this.saveUserid} />}
+              component={() => (
+                <Login saveUserid={this.saveUserid} isLogin={isLogin} />
+              )}
             />
             <Route path="/signupsuccess" exact component={SignSuccess} />
             <Route path="/signup" exact component={Signup} />
