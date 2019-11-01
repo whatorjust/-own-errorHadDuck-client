@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 
-// TODO: dotenv 적용
-// const path = require('path');
-// const dotenv = require('dotenv');
 const axios = require('axios');
 
 export default class Login extends Component {
@@ -15,7 +12,8 @@ export default class Login extends Component {
       pwdValue: '',
       noInput: false,
       noid: false,
-      nopw: false
+      nopw: false,
+      serverErr: false
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleLoginBtn = this.handleLoginBtn.bind(this);
@@ -41,7 +39,7 @@ export default class Login extends Component {
     }
 
     const instance = axios.create({
-      baseURL: 'http://13.125.254.202:5000',
+      baseURL: process.env.REACT_APP_API_KEY,
       timeout: 1000
     });
 
@@ -52,12 +50,14 @@ export default class Login extends Component {
       })
       .catch(({ response }) => {
         if (response.status === 500) {
-          console.log('서버에 문제가 있다!!');
+          this.setState({ serverErr: true });
+          return;
         }
 
         if (response.status === 400) {
           if (response.data.msg === 'username') {
             this.setState({ noid: true });
+            return;
           }
 
           if (response.data.msg === 'password') {
@@ -68,7 +68,7 @@ export default class Login extends Component {
   };
 
   render() {
-    const { idValue, pwdValue, noInput, noid, nopw } = this.state;
+    const { idValue, pwdValue, noInput, noid, nopw, serverErr } = this.state;
     const { isLogin } = this.props;
 
     return (
@@ -81,6 +81,7 @@ export default class Login extends Component {
               {noInput && <span>아이디나 비밀번호가 입력되지 않았습니다.</span>}
               {noid && <span>아이디가 틀립니다.</span>}
               {nopw && <span>비밀번호가 틀립니다.</span>}
+              {serverErr && <span>서버에 문제가 있습니다.</span>}
               <div>
                 <span>ID</span>
                 <input
@@ -101,7 +102,9 @@ export default class Login extends Component {
                 <button type="button" onClick={this.handleLoginBtn}>
                   로그인
                 </button>
-                <button type="button">회원가입</button>
+                <Link to="/signup">
+                  <button type="button">회원가입</button>
+                </Link>
               </div>
             </div>
           </div>
