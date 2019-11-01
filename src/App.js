@@ -18,6 +18,15 @@ export default class App extends Component {
     this.handleLogout = this.handleLogout.bind(this);
   }
 
+  componentDidMount() {
+    const { userid } = this.state;
+    const localid = JSON.parse(localStorage.getItem('userid'));
+
+    if (userid === null && localid !== null) {
+      this.setState({ userid: localid.userid, isLogin: true });
+    }
+  }
+
   saveUserid(userid) {
     this.setState({ userid, isLogin: true });
   }

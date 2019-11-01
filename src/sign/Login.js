@@ -46,6 +46,13 @@ export default class Login extends Component {
     instance
       .post('/users/login', { username: idValue, password: pwdValue })
       .then(({ data: { userid } }) => {
+        localStorage.setItem(
+          'userid',
+          JSON.stringify({
+            userid
+          })
+        );
+
         saveUserid(userid);
       })
       .catch(({ response }) => {
