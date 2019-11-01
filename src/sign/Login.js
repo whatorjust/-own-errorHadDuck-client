@@ -10,7 +10,7 @@ export default class Login extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { idValue: '', pwdValue: '' };
+    this.state = { idValue: '', pwdValue: '', noInput: false };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleLoginBtn = this.handleLoginBtn.bind(this);
   }
@@ -22,7 +22,12 @@ export default class Login extends Component {
   handleLoginBtn = () => {
     const { idValue, pwdValue } = this.state;
     const { saveUserid } = this.props;
-    // TODO: 미입력시 예외처리
+
+    // 아이디나 비번 미입력시 예외처리
+    if (idValue === '' || pwdValue === '') {
+      this.setState({ noInput: true });
+      return;
+    }
 
     const instance = axios.create({
       baseURL: 'http://13.125.254.202:5000',
@@ -41,7 +46,7 @@ export default class Login extends Component {
   };
 
   render() {
-    const { idValue, pwdValue } = this.state;
+    const { idValue, pwdValue, noInput } = this.state;
     const { isLogin } = this.props;
 
     return (
@@ -51,6 +56,7 @@ export default class Login extends Component {
         ) : (
           <div>
             <div>
+              {noInput && <span>아이디나 비밀번호가 입력되지 않았습니다.</span>}
               <div>
                 <span>ID</span>
                 <input
