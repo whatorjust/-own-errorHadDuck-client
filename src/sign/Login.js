@@ -10,7 +10,13 @@ export default class Login extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { idValue: '', pwdValue: '', noInput: false };
+    this.state = {
+      idValue: '',
+      pwdValue: '',
+      noInput: false,
+      noid: false,
+      nopw: false
+    };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.handleLoginBtn = this.handleLoginBtn.bind(this);
   }
@@ -20,8 +26,13 @@ export default class Login extends Component {
   };
 
   handleLoginBtn = () => {
-    const { idValue, pwdValue } = this.state;
+    const { idValue, pwdValue, noid, nopw } = this.state;
     const { saveUserid } = this.props;
+
+    // 기존 오류 메세지 초기화
+    if (noid || nopw) {
+      this.setState({ noid: false, nopw: false });
+    }
 
     // 아이디나 비번 미입력시 예외처리
     if (idValue === '' || pwdValue === '') {
@@ -39,14 +50,25 @@ export default class Login extends Component {
       .then(({ data: { userid } }) => {
         saveUserid(userid);
       })
-      .catch(error => {
-        // 응답이 안좋으면 아이디가 틀린건지 비번이 틀린건지 보여준다
-        console.log('err', error);
+      .catch(({ response }) => {
+        if (response.status === 500) {
+          console.log('서버에 문제가 있다!!');
+        }
+
+        if (response.status === 400) {
+          if (response.data.msg === 'username') {
+            this.setState({ noid: true });
+          }
+
+          if (response.data.msg === 'password') {
+            this.setState({ nopw: true });
+          }
+        }
       });
   };
 
   render() {
-    const { idValue, pwdValue, noInput } = this.state;
+    const { idValue, pwdValue, noInput, noid, nopw } = this.state;
     const { isLogin } = this.props;
 
     return (
@@ -57,6 +79,8 @@ export default class Login extends Component {
           <div>
             <div>
               {noInput && <span>아이디나 비밀번호가 입력되지 않았습니다.</span>}
+              {noid && <span>아이디가 틀립니다.</span>}
+              {nopw && <span>비밀번호가 틀립니다.</span>}
               <div>
                 <span>ID</span>
                 <input
