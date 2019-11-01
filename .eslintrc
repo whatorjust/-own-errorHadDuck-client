@@ -9,6 +9,7 @@
       }
     ],
     "jsx-a11y/label-has-associated-control": "off",
+    "import/no-extraneous-dependencies": "off",
     "react/prop-types": 0,
     "no-underscore-dangle": 0,
     "import/imports-first": ["error", "absolute-first"],
