@@ -5,33 +5,35 @@ import { Link } from 'react-router-dom';
 export default function Signup(props) {
   const signupEndPoint = `${process.env.REACT_APP_API_KEY}/users/signup`;
 
-  function addUsersData() {
-    const userData = document.getElementsByClassName('userdata');
-    return userData;
-  }
   const handleNext = () => {
     props.history.push('/');
   };
 
   function postData() {
-    const usersData = addUsersData();
+    /*
+      const username = document.getElementsByClassName('userdata')[0];
+      const password = document.getElementsByClassName('userdata')[1];
+      const email = document.getElementsByClassName('userdata')[2];
+    */
+    const [username, password, email] = document.getElementsByClassName(
+      'userdata'
+    );
 
-    return axios
+    axios
       .post(signupEndPoint, {
-        username: usersData[0].value,
-        password: usersData[1].value,
-        email: usersData[2].value
+        username: username.value,
+        password: password.value,
+        email: email.value
       })
       .then(() => {
         document.getElementById('chicken').innerHTML =
           '회원가입을 축하드립니다! 잠시 후 로그인 페이지로 이동합니다.';
-
         setTimeout(handleNext, 2000);
       })
-      .catch(error => {
-        if (error.response.data.msg === 'email') {
+      .catch(({ response: { data: { msg } } }) => {
+        if (msg === 'email') {
           document.getElementById('chicken').innerHTML = 'email이 존재합니다.';
-        } else if (error.response.data.msg === 'username') {
+        } else if (msg === 'username') {
           document.getElementById('chicken').innerHTML = '아이디가 존재합니다.';
         }
       });
