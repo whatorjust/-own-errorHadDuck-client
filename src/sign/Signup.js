@@ -2,11 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
-// require('dotenv').config();
-
 export default function Signup(props) {
-  const signupEndPoint = `${process.env.REACT_APP_API_KEY}/users/signup`; // /dotenv
-  // .env 파일로 숨겨서 작업
+  const signupEndPoint = `${process.env.REACT_APP_API_KEY}/users/signup`;
 
   function addUsersData() {
     const userData = document.getElementsByClassName('userdata');
@@ -14,7 +11,6 @@ export default function Signup(props) {
   }
   const handleNext = () => {
     props.history.push('/');
-    // redirect, use history...
   };
 
   function postData() {
