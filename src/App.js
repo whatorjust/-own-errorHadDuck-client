@@ -34,6 +34,7 @@ export default class App extends Component {
   handleLogout() {
     localStorage.setItem('userid', null);
     localStorage.setItem('isLogin', false);
+    localStorage.setItem('chats', null);
 
     this.setState({ isLogin: false, userid: null });
   }
