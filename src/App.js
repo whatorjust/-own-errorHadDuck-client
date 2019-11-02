@@ -46,7 +46,7 @@ export default class App extends Component {
       <Router>
         {isLogin && <Nav handleLogout={this.handleLogout} />}
 
-        <div>
+        <div className="container">
           <Switch>
             <Route
               path="/"
