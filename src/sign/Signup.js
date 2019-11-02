@@ -2,8 +2,10 @@ import React from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 
+// require('dotenv').config();
+
 export default function Signup(props) {
-  const signupEndPoint = 'http://13.125.254.202:5000/users/signup';
+  const signupEndPoint = `${process.env.REACT_APP_API_KEY}/users/signup`; // /dotenv
   // .env 파일로 숨겨서 작업
 
   function addUsersData() {
@@ -12,6 +14,7 @@ export default function Signup(props) {
   }
   const handleNext = () => {
     props.history.push('/');
+    // redirect, use history...
   };
 
   function postData() {
@@ -38,10 +41,10 @@ export default function Signup(props) {
       });
   }
 
-  function InputData({ idval }) {
+  function InputData({ idval, typestyle }) {
     return (
       <input
-        type="text"
+        type={typestyle}
         className="userdata"
         id={idval}
         minLength="4"
@@ -56,15 +59,15 @@ export default function Signup(props) {
       <div>회원가입</div>
       <p>
         <label htmlFor="id">아이디</label>
-        <InputData idval="id" />
+        <InputData idval="id" typestyle="text" />
       </p>
       <p>
         <label htmlFor="pwd">비밀번호</label>
-        <InputData idval="pwd" />
+        <InputData idval="pwd" typestyle="password" />
       </p>
       <p>
         <label htmlFor="email">이메일</label>
-        <InputData idval="email" />
+        <InputData idval="email" typestyle="text" />
       </p>
       <div id="chicken">
         <br />
@@ -74,7 +77,7 @@ export default function Signup(props) {
           확인
         </button>
         <Link to="/">
-          <button type="button">로그인</button>
+          <button type="button">취소</button>
         </Link>
       </div>
     </div>
