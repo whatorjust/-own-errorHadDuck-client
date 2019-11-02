@@ -1,10 +1,10 @@
 import React from 'react';
 
-export default function UserMsg() {
+export default function UserMsg({ value }) {
   return (
-    <div>
+    <div style={{ textAlign: 'right' }}>
       <span>유저 이미지 : </span>
-      <span>에러 남 ㅠ</span>
+      <span>{value}</span>
     </div>
   );
 }
