@@ -34,6 +34,7 @@ export default class App extends Component {
   handleLogout() {
     localStorage.setItem('userid', null);
     localStorage.setItem('isLogin', false);
+    localStorage.setItem('chats', null);
 
     this.setState({ isLogin: false, userid: null });
   }
@@ -45,7 +46,7 @@ export default class App extends Component {
       <Router>
         {isLogin && <Nav handleLogout={this.handleLogout} />}
 
-        <div>
+        <div className="container">
           <Switch>
             <Route
               path="/"
