@@ -1,23 +1,82 @@
 import React from 'react';
+import axios from 'axios';
+import { Link } from 'react-router-dom';
 
-export default function Signup() {
+export default function Signup(props) {
+  const signupEndPoint = `${process.env.REACT_APP_API_KEY}/users/signup`;
+
+  const handleNext = () => {
+    props.history.push('/');
+  };
+
+  function postData() {
+    /*
+      const username = document.getElementsByClassName('userdata')[0];
+      const password = document.getElementsByClassName('userdata')[1];
+      const email = document.getElementsByClassName('userdata')[2];
+    */
+    const [username, password, email] = document.getElementsByClassName(
+      'userdata'
+    );
+
+    axios
+      .post(signupEndPoint, {
+        username: username.value,
+        password: password.value,
+        email: email.value
+      })
+      .then(() => {
+        document.getElementById('chicken').innerHTML =
+          '회원가입을 축하드립니다! 잠시 후 로그인 페이지로 이동합니다.';
+        setTimeout(handleNext, 2000);
+      })
+      .catch(({ response: { data: { msg } } }) => {
+        if (msg === 'email') {
+          document.getElementById('chicken').innerHTML = 'email이 존재합니다.';
+        } else if (msg === 'username') {
+          document.getElementById('chicken').innerHTML = '아이디가 존재합니다.';
+        }
+      });
+  }
+
+  function InputData({ idval, typestyle }) {
+    return (
+      <input
+        type={typestyle}
+        className="userdata"
+        id={idval}
+        minLength="4"
+        maxLength="8"
+        size="10"
+      />
+    );
+  }
+
   return (
     <div>
       <div>회원가입</div>
       <p>
         <label htmlFor="id">아이디</label>
-        <input type="text" id="id" minLength="4" maxLength="8" size="10" />
+        <InputData idval="id" typestyle="text" />
       </p>
       <p>
         <label htmlFor="pwd">비밀번호</label>
-        <input type="text" id="pwd" minLength="4" maxLength="8" size="10" />
+        <InputData idval="pwd" typestyle="password" />
       </p>
       <p>
         <label htmlFor="email">이메일</label>
-        <input type="text" id="email" minLength="4" maxLength="8" size="10" />
+        <InputData idval="email" typestyle="text" />
       </p>
+      <div id="chicken">
+        <br />
+      </div>
       <div>
-        <button type="button">제출</button>
+        <button onClick={postData} type="button">
+          확인
+        </button>
+        <Link to="/">
+          <button type="button">취소</button>
+        </Link>
       </div>
     </div>
   );
