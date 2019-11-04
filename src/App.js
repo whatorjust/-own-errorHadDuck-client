@@ -9,6 +9,8 @@ import Overview from './board/Overview';
 import SingleView from './board/SingleView';
 import ChatBot from './chat/ChatBot';
 import Nav from './Nav';
+import Err404 from './Err404';
+import Err500 from './Err500';
 
 export default class App extends Component {
   constructor(props) {
@@ -48,6 +50,8 @@ export default class App extends Component {
 
         <div className="container">
           <Switch>
+            <Route path="/404page" exact component={Err404} />
+            <Route path="/500page" exact component={Err500} />
             <Route
               path="/"
               exact
