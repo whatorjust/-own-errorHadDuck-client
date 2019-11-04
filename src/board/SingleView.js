@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router-dom';
+import Cookies from 'universal-cookie';
+import Err404 from '../Err404';
 
 const axios = require('axios');
 
@@ -25,16 +27,21 @@ export default class SingleView extends Component {
 
     if (match !== undefined) {
       const { postid } = match.params;
+      const cookies = new Cookies();
+      const oreo = cookies.get('oreo');
 
       const instance = axios.create({
         baseURL: process.env.REACT_APP_API_KEY,
-        timeout: 1000
+        timeout: 1000,
+        headers: {
+          Cookie: `oreo=${oreo};`
+        }
       });
 
       instance
         .get(`/posts/${postid}`)
         .then(({ data }) => {
-          this.setState({ mode: 'read', data });
+          this.setState({ mode: 'read', data, isErr: null });
         })
         .catch(({ response }) => {
           if (response.status === 500) {
@@ -43,6 +50,7 @@ export default class SingleView extends Component {
           }
 
           if (response.status === 400) {
+            console.log(response.data);
             this.setState({ isErr: '404' });
           }
         });
@@ -51,18 +59,13 @@ export default class SingleView extends Component {
     }
   }
 
-  componentWillUnmount() {
-    this.setState({ isErr: null });
-  }
-
   render() {
     const { data, isErr } = this.state;
-    console.log(this.isErr);
 
     return (
       <div>
         <div>
-          {/* {isErr === '404' && <Redirect to="/404page" />}
+          {/* {isErr === '404' && <Err404 />}
           {isErr === '500' && <Redirect to="/500page" />} */}
           <div>
             <span>{data && data.iscomplete ? '해결' : '미해결'}</span>
