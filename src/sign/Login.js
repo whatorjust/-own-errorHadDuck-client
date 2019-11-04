@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Redirect, Link } from 'react-router-dom';
-import Cookies from 'universal-cookie';
 
 const axios = require('axios');
 
@@ -40,20 +39,15 @@ export default class Login extends Component {
     }
 
     const instance = axios.create({
-      baseURL: process.env.REACT_APP_API_KEY,
       timeout: 1000
     });
 
     instance
       .post('/users/login', { username: idValue, password: pwdValue })
       .then(({ data }) => {
-        const { userid, oreo } = data;
+        const { userid } = data;
         localStorage.setItem('userid', userid);
         localStorage.setItem('isLogin', true);
-
-        const cookies = new Cookies();
-        cookies.remove('oreo');
-        cookies.set('oreo', oreo, { path: '/' });
 
         saveUserid(userid);
       })
