@@ -4,6 +4,10 @@ import { Redirect } from 'react-router-dom';
 
 const axios = require('axios');
 
+const instance = axios.create({
+  timeout: 1000
+});
+
 export default class SingleView extends Component {
   constructor(props) {
     super(props);
@@ -17,6 +21,7 @@ export default class SingleView extends Component {
     this.handleLeftBtn = this.handleLeftBtn.bind(this);
     this.handleAddKeyword = this.handleAddKeyword.bind(this);
     this.handleAddRef = this.handleAddRef.bind(this);
+    this.getReadData = this.getReadData.bind(this);
   }
 
   componentDidMount() {
@@ -24,14 +29,74 @@ export default class SingleView extends Component {
 
     if (match !== undefined) {
       const { postid } = match.params;
-      const instance = axios.create({
-        timeout: 1000
+      this.getReadData(postid);
+    } else {
+      this.setState({ mode: 'write' });
+    }
+  }
+
+  getReadData(postid) {
+    instance
+      .get(`/posts/${postid}`)
+      .then(({ data }) => {
+        this.setState({
+          mode: 'read',
+          data,
+          isErr: null,
+          writeKeyWords: [],
+          writeRefers: []
+        });
+      })
+      .catch(({ response }) => {
+        if (response.status === 500) {
+          this.setState(prev => {
+            return {
+              mode: prev.mode,
+              data: prev.data,
+              isErr: '500',
+              writeKeyWords: [],
+              writeRefers: []
+            };
+          });
+          return;
+        }
+
+        if (response.status === 400) {
+          this.setState(prev => {
+            return {
+              mode: prev.mode,
+              data: prev.data,
+              isErr: '404',
+              writeKeyWords: [],
+              writeRefers: []
+            };
+          });
+        }
       });
+  }
+
+  handleLeftBtn() {
+    const { mode } = this.state;
+
+    if (mode === 'write') {
+      const { writeKeyWords, writeRefers } = this.state;
+
+      // TODO: 예외처리 ) 미입력시???
+
+      const obj = {
+        post: {
+          postname: this.writePostname.value,
+          postcode: this.writePostCode.value,
+          solution: this.writeSolution.value
+        },
+        keyword: writeKeyWords,
+        refer: writeRefers
+      };
 
       instance
-        .get(`/posts/${postid}`)
+        .post('/posts', obj)
         .then(({ data }) => {
-          this.setState({ mode: 'read', data, isErr: null });
+          this.getReadData(data.postid);
         })
         .catch(({ response }) => {
           if (response.status === 500) {
@@ -47,16 +112,6 @@ export default class SingleView extends Component {
             });
           }
         });
-    } else {
-      this.setState({ mode: 'write' });
-    }
-  }
-
-  handleLeftBtn() {
-    const { mode } = this.state;
-    if (mode === 'write') {
-      console.log('code', this.writePostCode.value);
-      console.log('solve', this.writeSolution.value);
     }
   }
 
@@ -69,23 +124,23 @@ export default class SingleView extends Component {
 
     this.setState(prev => {
       return {
-        writeKeyWords: [...prev.writeKeyWords, <li>{val}</li>]
+        writeKeyWords: [...prev.writeKeyWords, val]
       };
     });
   }
 
   handleAddRef() {
-    const refUrlVal = this.refUrl.value;
-    const refUnderstandVal = this.refUnderstand.value;
+    const referurl = this.refUrl.value;
+    const understand = this.refUnderstand.value;
 
-    if (refUrlVal === '' || refUnderstandVal === '') return;
+    if (referurl === '' || understand === '') return;
 
     this.refUrl.value = '';
     this.refUnderstand.value = '';
 
     this.setState(prev => {
       return {
-        writeRefers: [...prev.writeRefers, { refUrlVal, refUnderstandVal }]
+        writeRefers: [...prev.writeRefers, { referurl, understand }]
       };
     });
   }
@@ -103,11 +158,18 @@ export default class SingleView extends Component {
           {isErr === '404' && <Redirect to="/404page" />}
           {isErr === '500' && <Redirect to="/500page" />}
           <div>
-            <span>{data && data.iscomplete ? '해결' : '미해결'}</span>
+            <span>{data && (data.iscomplete ? '해결' : '미해결')}</span>
           </div>
           <h1>
             {data && data.postname}
-            {mode === 'write' && '새로운 오류 작성'}
+            {mode === 'write' && (
+              <input
+                placeholder="제목"
+                ref={element => {
+                  this.writePostname = element;
+                }}
+              />
+            )}
           </h1>
           <div>
             <span>에러 코드</span>
@@ -142,7 +204,7 @@ export default class SingleView extends Component {
             )}
 
             <ul>
-              {writeKeyWords}
+              {mode === 'write' && writeKeyWords.map(ele => <li>{ele}</li>)}
               {data &&
                 data.Poskeys.length !== 0 &&
                 data.Poskeys.map(ele => <li>{ele.Keyword.keyword}</li>)}
@@ -179,8 +241,8 @@ export default class SingleView extends Component {
                     </li>
                     {writeRefers.map(ele => (
                       <ul>
-                        <li>url : {ele.refUrlVal}</li>
-                        <li>이해한 내용 : {ele.refUnderstandVal}</li>
+                        <li>url : {ele.referurl}</li>
+                        <li>이해한 내용 : {ele.understand}</li>
                       </ul>
                     ))}
                   </ul>

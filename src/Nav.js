@@ -9,8 +9,8 @@ export default function Nav({ handleLogout }) {
         <Link to="/overview">
           <button type="button">overview</button>
         </Link>
-        <Link to="/newerrorlog">
-          <button type="button">newerrorlog</button>
+        <Link to="/singleview">
+          <button type="button">새글 쓰기</button>
         </Link>
         <Link to="/boardlist/:mode">
           <button type="button">전체목록</button>

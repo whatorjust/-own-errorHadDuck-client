@@ -65,11 +65,7 @@ export default class App extends Component {
             <Route path="/overview" exact component={Overview} />
 
             {/* only write mode */}
-            <Route
-              path="/singleview"
-              exact
-              component={() => <SingleView userid={userid} />}
-            />
+            <Route path="/singleview" exact component={() => <SingleView />} />
 
             {/* update, delete, read mode */}
             <Route path="/singleview/:postid" exact component={SingleView} />
