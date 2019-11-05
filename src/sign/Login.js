@@ -39,13 +39,13 @@ export default class Login extends Component {
     }
 
     const instance = axios.create({
-      baseURL: process.env.REACT_APP_API_KEY,
       timeout: 1000
     });
 
     instance
       .post('/users/login', { username: idValue, password: pwdValue })
-      .then(({ data: { userid } }) => {
+      .then(({ data }) => {
+        const { userid } = data;
         localStorage.setItem('userid', userid);
         localStorage.setItem('isLogin', true);
 
@@ -56,13 +56,11 @@ export default class Login extends Component {
           this.setState({ serverErr: true });
           return;
         }
-
         if (response.status === 400) {
           if (response.data.msg === 'username') {
             this.setState({ noid: true });
             return;
           }
-
           if (response.data.msg === 'password') {
             this.setState({ nopw: true });
           }

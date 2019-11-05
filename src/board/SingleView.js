@@ -7,7 +7,6 @@ export default class SingleView extends Component {
   constructor(props) {
     super(props);
     this.state = { mode: 'read', data: null, isErr: null };
-    this.isErr = null;
   }
 
   // TODO:
@@ -25,25 +24,27 @@ export default class SingleView extends Component {
 
     if (match !== undefined) {
       const { postid } = match.params;
-
       const instance = axios.create({
-        baseURL: process.env.REACT_APP_API_KEY,
         timeout: 1000
       });
 
       instance
         .get(`/posts/${postid}`)
         .then(({ data }) => {
-          this.setState({ mode: 'read', data });
+          this.setState({ mode: 'read', data, isErr: null });
         })
         .catch(({ response }) => {
           if (response.status === 500) {
-            this.setState({ isErr: '500' });
+            this.setState(prev => {
+              return { mode: prev.mode, data: prev.data, isErr: '500' };
+            });
             return;
           }
 
           if (response.status === 400) {
-            this.setState({ isErr: '404' });
+            this.setState(prev => {
+              return { mode: prev.mode, data: prev.data, isErr: '404' };
+            });
           }
         });
     } else {
@@ -51,19 +52,14 @@ export default class SingleView extends Component {
     }
   }
 
-  componentWillUnmount() {
-    this.setState({ isErr: null });
-  }
-
   render() {
     const { data, isErr } = this.state;
-    console.log(this.isErr);
 
     return (
       <div>
         <div>
-          {/* {isErr === '404' && <Redirect to="/404page" />}
-          {isErr === '500' && <Redirect to="/500page" />} */}
+          {isErr === '404' && <Redirect to="/404page" />}
+          {isErr === '500' && <Redirect to="/500page" />}
           <div>
             <span>{data && data.iscomplete ? '해결' : '미해결'}</span>
           </div>
