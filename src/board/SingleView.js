@@ -1,14 +1,15 @@
 /* eslint-disable no-nested-ternary */
 import React, { Component } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
 
 const axios = require('axios');
 
 const instance = axios.create({
+  withCredentials: true,
   timeout: 1000
 });
 
-export default class SingleView extends Component {
+class SingleView extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -22,16 +23,26 @@ export default class SingleView extends Component {
     this.handleAddKeyword = this.handleAddKeyword.bind(this);
     this.handleAddRef = this.handleAddRef.bind(this);
     this.getReadData = this.getReadData.bind(this);
+    this.handleCancleBtn = this.handleCancleBtn.bind(this);
   }
 
   componentDidMount() {
-    const { match } = this.props;
+    const {
+      match: {
+        params: { postid }
+      }
+    } = this.props;
 
-    if (match !== undefined) {
-      const { postid } = match.params;
+    if (postid) {
       this.getReadData(postid);
     } else {
-      this.setState({ mode: 'write' });
+      this.setState({
+        mode: 'write',
+        data: null,
+        isErr: null,
+        writeKeyWords: [],
+        writeRefers: []
+      });
     }
   }
 
@@ -52,7 +63,7 @@ export default class SingleView extends Component {
           this.setState(prev => {
             return {
               mode: prev.mode,
-              data: prev.data,
+              data: null,
               isErr: '500',
               writeKeyWords: [],
               writeRefers: []
@@ -65,7 +76,7 @@ export default class SingleView extends Component {
           this.setState(prev => {
             return {
               mode: prev.mode,
-              data: prev.data,
+              data: null,
               isErr: '404',
               writeKeyWords: [],
               writeRefers: []
@@ -76,18 +87,28 @@ export default class SingleView extends Component {
   }
 
   handleLeftBtn() {
-    const { mode } = this.state;
+    const { mode, writeKeyWords, writeRefers } = this.state;
+    const { history } = this.props;
 
     if (mode === 'write') {
-      const { writeKeyWords, writeRefers } = this.state;
-
-      // TODO: 예외처리 ) 미입력시???
+      if (this.writePostname.value === '') {
+        this.setState(prev => {
+          return {
+            mode: prev.mode,
+            writeKeyWords: prev.writeKeyWords,
+            writeRefers: prev.writeRefers,
+            needName: true
+          };
+        });
+        return;
+      }
 
       const obj = {
         post: {
           postname: this.writePostname.value,
           postcode: this.writePostCode.value,
-          solution: this.writeSolution.value
+          solution: this.writeSolution.value,
+          iscomplete: this.unsolveRadio.checked
         },
         keyword: writeKeyWords,
         refer: writeRefers
@@ -96,7 +117,7 @@ export default class SingleView extends Component {
       instance
         .post('/posts', obj)
         .then(({ data }) => {
-          this.getReadData(data.postid);
+          history.push(`/singleview/${data.postid}`);
         })
         .catch(({ response }) => {
           if (response.status === 500) {
@@ -116,15 +137,15 @@ export default class SingleView extends Component {
   }
 
   handleAddKeyword() {
-    const val = this.keyword.value;
+    const { value } = this.keyword;
 
-    if (val === '') return;
+    if (value === '') return;
 
     this.keyword.value = '';
 
     this.setState(prev => {
       return {
-        writeKeyWords: [...prev.writeKeyWords, val]
+        writeKeyWords: [...prev.writeKeyWords, value]
       };
     });
   }
@@ -145,11 +166,23 @@ export default class SingleView extends Component {
     });
   }
 
+  handleCancleBtn() {
+    const { history } = this.props;
+    history.goBack();
+  }
+
   render() {
-    const { data, isErr, mode, writeKeyWords, writeRefers } = this.state;
+    const {
+      data,
+      isErr,
+      mode,
+      writeKeyWords,
+      writeRefers,
+      needName
+    } = this.state;
     const leftBtn =
       mode === 'read' ? '수정' : mode === 'write' ? '작성 완료' : '수정 완료';
-    const rightBtn =
+    const cancleBtn =
       mode === 'read' ? '삭제' : mode === 'write' ? '작성 취소' : '수정 취소';
 
     return (
@@ -171,6 +204,9 @@ export default class SingleView extends Component {
               />
             )}
           </h1>
+          {needName && (
+            <span style={{ color: 'red' }}>제목은 필수 항목입니다.</span>
+          )}
           <div>
             <span>에러 코드</span>
             <div>
@@ -274,13 +310,46 @@ export default class SingleView extends Component {
               )}
             </p>
           </div>
+
+          {mode === 'write' && (
+            <div>
+              <div className="form-check-inline">
+                <label className="form-check-label">
+                  <input
+                    type="radio"
+                    className="form-check-input"
+                    name="optradio"
+                    defaultChecked
+                    ref={element => {
+                      this.unsolveRadio = element;
+                    }}
+                  />
+                  미해결
+                </label>
+              </div>
+              <div className="form-check-inline">
+                <label className="form-check-label">
+                  <input
+                    type="radio"
+                    className="form-check-input"
+                    name="optradio"
+                  />
+                  해결
+                </label>
+              </div>
+            </div>
+          )}
         </div>
 
         <button type="button" onClick={this.handleLeftBtn}>
           {leftBtn}
         </button>
-        <button type="button">{rightBtn}</button>
+        <button type="button" onClick={this.handleCancleBtn}>
+          {cancleBtn}
+        </button>
       </div>
     );
   }
 }
+
+export default withRouter(SingleView);
