@@ -15,34 +15,30 @@ import Err500 from './Err500';
 export default class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { userid: null, isLogin: false };
-    this.saveUserid = this.saveUserid.bind(this);
+    this.state = { isLogin: false };
     this.handleLogout = this.handleLogout.bind(this);
+    this.handleLoginState = this.handleLoginState.bind(this);
   }
 
   componentDidMount() {
-    const { userid } = this.state;
-    const localid = JSON.parse(localStorage.getItem('userid'));
-
-    if (userid === null && localid !== null) {
-      this.setState({ userid: Number(localid), isLogin: true });
+    if (JSON.parse(localStorage.getItem('isLogin'))) {
+      this.setState({ isLogin: true });
     }
   }
 
-  saveUserid(userid) {
-    this.setState({ userid, isLogin: true });
+  handleLoginState() {
+    this.setState({ isLogin: true });
   }
 
   handleLogout() {
-    localStorage.setItem('userid', null);
     localStorage.setItem('isLogin', false);
     localStorage.setItem('chats', null);
 
-    this.setState({ isLogin: false, userid: null });
+    this.setState({ isLogin: false });
   }
 
   render() {
-    const { userid, isLogin } = this.state;
+    const { isLogin } = this.state;
 
     return (
       <Router>
@@ -56,7 +52,10 @@ export default class App extends Component {
               path="/"
               exact
               component={() => (
-                <Login saveUserid={this.saveUserid} isLogin={isLogin} />
+                <Login
+                  isLogin={isLogin}
+                  handleLoginState={this.handleLoginState}
+                />
               )}
             />
             <Route path="/signupsuccess" exact component={SignSuccess} />
@@ -65,11 +64,7 @@ export default class App extends Component {
             <Route path="/overview" exact component={Overview} />
 
             {/* only write mode */}
-            <Route
-              path="/singleview"
-              exact
-              component={() => <SingleView userid={userid} />}
-            />
+            <Route path="/singleview" exact component={() => <SingleView />} />
 
             {/* update, delete, read mode */}
             <Route path="/singleview/:postid" exact component={SingleView} />
