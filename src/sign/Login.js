@@ -25,8 +25,7 @@ export default class Login extends Component {
 
   handleLoginBtn = () => {
     const { idValue, pwdValue, noid, nopw } = this.state;
-    const { saveUserid } = this.props;
-
+    const { handleLoginState } = this.props;
     // 기존 오류 메세지 초기화
     if (noid || nopw) {
       this.setState({ noid: false, nopw: false });
@@ -44,12 +43,9 @@ export default class Login extends Component {
 
     instance
       .post('/users/login', { username: idValue, password: pwdValue })
-      .then(({ data }) => {
-        const { userid } = data;
-        localStorage.setItem('userid', userid);
+      .then(() => {
         localStorage.setItem('isLogin', true);
-
-        saveUserid(userid);
+        handleLoginState();
       })
       .catch(({ response }) => {
         if (response.status === 500) {
