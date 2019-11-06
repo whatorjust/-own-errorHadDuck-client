@@ -12,13 +12,13 @@ export default function Nav({ handleLogout }) {
         <Link to="/singleview">
           <button type="button">새글 쓰기</button>
         </Link>
-        <Link to="/boardlist/:mode">
+        <Link to="/boardlist/entire">
           <button type="button">전체목록</button>
         </Link>
-        <Link to="/boardlist/:mode">
+        <Link to="/boardlist/completed">
           <button type="button">해결목록</button>
         </Link>
-        <Link to="/boardlist/:mode">
+        <Link to="/boardlist/incompleted">
           <button type="button">미해결목록</button>
         </Link>
         <Link to="/chatbot">
