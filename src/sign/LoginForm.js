@@ -1,16 +1,50 @@
 import React, { Component } from 'react';
-
-import { Form, Icon, Input, Button, Checkbox } from 'antd';
+import { Link } from 'react-router-dom';
+import { Form, Icon, Input, Button, Checkbox, message } from 'antd';
+import axios from 'axios';
 
 class LoginForm extends Component {
   handleSubmit = e => {
+    const { handleVarietyState, handleLoginState, form } = this.props;
+    const instance = axios.create({
+      timeout: 1000
+    });
     e.preventDefault();
-    this.props.form.validateFields((err, values) => {
+    form.validateFields((err, values) => {
       if (!err) {
         // values.username
         // values.password
 
-        console.log('Received values of form: ', values);
+        instance
+          .post('/users/login', {
+            username: values.username,
+            password: values.password
+          })
+          .then(() => {
+            localStorage.setItem('isLogin', true);
+            handleLoginState();
+          })
+          .catch(({ response }) => {
+            if (response.status === 500) {
+              message.error('서버에서 에러가 발생하였습니다');
+              handleVarietyState('serverErr', true);
+              // this.setState({ serverErr: true });
+              return;
+            }
+            if (response.status === 400) {
+              if (response.data.msg === 'username') {
+                message.error('존재하지 않는 ID입니다.');
+                handleVarietyState('noid', true);
+                // this.setState({ noid: true });
+                return;
+              }
+              if (response.data.msg === 'password') {
+                message.error('비밀번호가 틀렸습니다.');
+                handleVarietyState('nopw', true);
+                // this.setState({ nopw: true });
+              }
+            }
+          });
       }
     });
   };
@@ -21,22 +55,22 @@ class LoginForm extends Component {
       <Form onSubmit={this.handleSubmit} className="login-form">
         <Form.Item>
           {getFieldDecorator('username', {
-            rules: [{ required: true, message: 'Please input your username!' }]
+            rules: [{ required: true, message: '아이디를 입력해주세요' }]
           })(
             <Input
               prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              placeholder="Username"
+              placeholder="아이디"
             />
           )}
         </Form.Item>
         <Form.Item>
           {getFieldDecorator('password', {
-            rules: [{ required: true, message: 'Please input your Password!' }]
+            rules: [{ required: true, message: '비밀번호를 입력해주세요' }]
           })(
             <Input
               prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
               type="password"
-              placeholder="Password"
+              placeholder="비밀번호"
             />
           )}
         </Form.Item>
@@ -44,15 +78,15 @@ class LoginForm extends Component {
           {getFieldDecorator('remember', {
             valuePropName: 'checked',
             initialValue: true
-          })(<Checkbox>Remember me</Checkbox>)}
+          })(<Checkbox>로그인 정보 기억</Checkbox>)}
           <Button
             type="primary"
             htmlType="submit"
             className="login-form-button"
           >
-            Log in
+            로그인
           </Button>
-          Or <a href="">register now!</a>
+          혹은 <Link to="/signup">회원가입</Link>
         </Form.Item>
       </Form>
     );
