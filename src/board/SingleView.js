@@ -108,7 +108,7 @@ class SingleView extends Component {
           postname: this.writePostname.value,
           postcode: this.writePostCode.value,
           solution: this.writeSolution.value,
-          iscomplete: this.unsolveRadio.checked
+          iscomplete: !this.unsolveRadio.checked
         },
         keyword: writeKeyWords,
         refer: writeRefers
@@ -167,7 +167,33 @@ class SingleView extends Component {
   }
 
   handleCancleBtn() {
+    const { mode, data } = this.state;
     const { history } = this.props;
+
+    if (mode === 'read') {
+      instance
+        .delete(`/posts/${data.id}`)
+        .then(() => {
+          history.push('/overview');
+        })
+        .catch(({ response }) => {
+          if (response.status === 500) {
+            this.setState(prev => {
+              return { mode: prev.mode, data: prev.data, isErr: '500' };
+            });
+            return;
+          }
+
+          if (response.status === 400) {
+            this.setState(prev => {
+              return { mode: prev.mode, data: prev.data, isErr: '404' };
+            });
+          }
+        });
+
+      return;
+    }
+
     history.goBack();
   }
 
