@@ -11,7 +11,7 @@ import ChatBot from './chat/ChatBot';
 import Nav from './Nav';
 import Err404 from './Err404';
 import Err500 from './Err500';
-
+import './App.css';
 export default class App extends Component {
   constructor(props) {
     super(props);
