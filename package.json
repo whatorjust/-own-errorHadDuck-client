@@ -2,7 +2,7 @@
   "name": "errorhadduck-client",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://faa573b4.ngrok.io",
+  "proxy": "http://13.125.254.202:5000",
   "dependencies": {
     "axios": "^0.19.0",
     "html-react-parser": "^0.9.2",
