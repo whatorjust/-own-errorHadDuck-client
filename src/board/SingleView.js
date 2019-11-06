@@ -24,6 +24,7 @@ class SingleView extends Component {
     this.handleAddRef = this.handleAddRef.bind(this);
     this.getReadData = this.getReadData.bind(this);
     this.handleCancleBtn = this.handleCancleBtn.bind(this);
+    this.handleInputChange = this.handleInputChange.bind(this);
   }
 
   componentDidMount() {
@@ -86,55 +87,9 @@ class SingleView extends Component {
       });
   }
 
-  handleLeftBtn() {
-    const { mode, writeKeyWords, writeRefers } = this.state;
-    const { history } = this.props;
-
-    if (mode === 'write') {
-      if (this.writePostname.value === '') {
-        this.setState(prev => {
-          return {
-            mode: prev.mode,
-            writeKeyWords: prev.writeKeyWords,
-            writeRefers: prev.writeRefers,
-            needName: true
-          };
-        });
-        return;
-      }
-
-      const obj = {
-        post: {
-          postname: this.writePostname.value,
-          postcode: this.writePostCode.value,
-          solution: this.writeSolution.value,
-          iscomplete: !this.unsolveRadio.checked
-        },
-        keyword: writeKeyWords,
-        refer: writeRefers
-      };
-
-      instance
-        .post('/posts', obj)
-        .then(({ data }) => {
-          history.push(`/singleview/${data.postid}`);
-        })
-        .catch(({ response }) => {
-          if (response.status === 500) {
-            this.setState(prev => {
-              return { mode: prev.mode, data: prev.data, isErr: '500' };
-            });
-            return;
-          }
-
-          if (response.status === 400) {
-            this.setState(prev => {
-              return { mode: prev.mode, data: prev.data, isErr: '404' };
-            });
-          }
-        });
-    }
-  }
+  handleInputChange = (e, stateKey) => {
+    this.setState({ [stateKey]: e.target.value });
+  };
 
   handleAddKeyword() {
     const { value } = this.keyword;
@@ -197,6 +152,125 @@ class SingleView extends Component {
     history.goBack();
   }
 
+  handleLeftBtn() {
+    const {
+      mode,
+      writeKeyWords,
+      writeRefers,
+      writePostname,
+      writeSolution,
+      writePostCode,
+      data
+    } = this.state;
+    const { history } = this.props;
+
+    if (mode === 'update') {
+      if (writePostname.value === '') {
+        this.setState(prev => {
+          return {
+            mode: prev.mode,
+            writeKeyWords: prev.writeKeyWords,
+            writeRefers: prev.writeRefers,
+            needName: true
+          };
+        });
+        return;
+      }
+
+      const obj = {
+        post: {
+          postname: writePostname,
+          postcode: writePostCode,
+          solution: writeSolution,
+          iscomplete: !this.unsolveRadio.checked
+        },
+        keyword: writeKeyWords,
+        refer: writeRefers
+      };
+
+      instance
+        .patch(`/posts/${data.id}`, obj)
+        .then(res => {
+          this.getReadData(res.data.postid);
+        })
+        .catch(({ response }) => {
+          if (response.status === 500) {
+            this.setState(prev => {
+              return { mode: prev.mode, data: prev.data, isErr: '500' };
+            });
+            return;
+          }
+
+          if (response.status === 400) {
+            this.setState(prev => {
+              return { mode: prev.mode, data: prev.data, isErr: '404' };
+            });
+          }
+        });
+    }
+
+    if (mode === 'read') {
+      // TODO: 키워드랑 ref는 어떻게 수정하지..? 메테리얼로 삭제하고 수정은 없고 새로 생성만?
+
+      this.setState({
+        mode: 'update',
+        writePostname: data.postname,
+        writePostCode: data.postcode,
+        writeSolution: data.solution,
+        writeKeyWords: data.Poskeys.map(ele => ele.Keyword.keyword),
+        writeRefers: data.Refers.map(ele => ({
+          referurl: ele.referurl,
+          understand: ele.understand
+        }))
+      });
+    }
+
+    if (mode === 'write') {
+      if (writePostname === '') {
+        this.setState(prev => {
+          return {
+            mode: prev.mode,
+            writeKeyWords: prev.writeKeyWords,
+            writeRefers: prev.writeRefers,
+            needName: true
+          };
+        });
+        return;
+      }
+
+      const obj = {
+        post: {
+          postname: writePostname,
+          postcode: writePostCode,
+          solution: writeSolution,
+          iscomplete: !this.unsolveRadio.checked
+        },
+        keyword: writeKeyWords,
+        refer: writeRefers
+      };
+
+      instance
+        .post('/posts', obj)
+        .then(res => {
+          history.push(`/singleview/${res.data.postid}`);
+        })
+        .catch(({ response }) => {
+          if (response.status === 500) {
+            this.setState(prev => {
+              return { mode: prev.mode, data: prev.data, isErr: '500' };
+            });
+            return;
+          }
+
+          if (response.status === 400) {
+            this.setState(prev => {
+              return { mode: prev.mode, data: prev.data, isErr: '404' };
+            });
+          }
+        });
+    }
+  }
+
   render() {
     const {
       data,
@@ -204,6 +278,9 @@ class SingleView extends Component {
       mode,
       writeKeyWords,
       writeRefers,
+      writePostname,
+      writePostCode,
+      writeSolution,
       needName
     } = this.state;
     const leftBtn =
@@ -217,16 +294,17 @@ class SingleView extends Component {
           {isErr === '404' && <Redirect to="/404page" />}
           {isErr === '500' && <Redirect to="/500page" />}
           <div>
-            <span>{data && (data.iscomplete ? '해결' : '미해결')}</span>
+            <span>
+              {mode === 'read' && data && (data.iscomplete ? '해결' : '미해결')}
+            </span>
           </div>
           <h1>
-            {data && data.postname}
-            {mode === 'write' && (
+            {mode === 'read' && data && data.postname}
+            {mode !== 'read' && (
               <input
                 placeholder="제목"
-                ref={element => {
-                  this.writePostname = element;
-                }}
+                value={writePostname}
+                onChange={e => this.handleInputChange(e, 'writePostname')}
               />
             )}
           </h1>
@@ -237,13 +315,12 @@ class SingleView extends Component {
             <span>에러 코드</span>
             <div>
               <pre>
-                <code>{data && data.postcode}</code>
+                <code>{mode === 'read' && data && data.postcode}</code>
               </pre>
-              {mode === 'write' && (
+              {mode !== 'read' && (
                 <textarea
-                  ref={element => {
-                    this.writePostCode = element;
-                  }}
+                  value={writePostCode}
+                  onChange={e => this.handleInputChange(e, 'writePostCode')}
                 />
               )}
             </div>
@@ -251,7 +328,7 @@ class SingleView extends Component {
 
           <div>
             <span>검색 키워드</span>
-            {mode === 'write' && (
+            {mode !== 'read' && (
               <div>
                 <input
                   type="text"
@@ -266,8 +343,9 @@ class SingleView extends Component {
             )}
 
             <ul>
-              {mode === 'write' && writeKeyWords.map(ele => <li>{ele}</li>)}
-              {data &&
+              {mode !== 'read' && writeKeyWords.map(ele => <li>{ele}</li>)}
+              {mode === 'read' &&
+                data &&
                 data.Poskeys.length !== 0 &&
                 data.Poskeys.map(ele => <li>{ele.Keyword.keyword}</li>)}
             </ul>
@@ -277,7 +355,7 @@ class SingleView extends Component {
           <div>
             <div>
               <span>참고한 페이지</span>
-              {mode === 'write' && (
+              {mode !== 'read' && (
                 <div>
                   <button type="button" onClick={this.handleAddRef}>
                     +
@@ -311,7 +389,8 @@ class SingleView extends Component {
                 </div>
               )}
 
-              {data &&
+              {mode === 'read' &&
+                data &&
                 data.Refers.length !== 0 &&
                 data.Refers.map(ele => (
                   <ul>
@@ -326,18 +405,17 @@ class SingleView extends Component {
           <div>
             <span>해결한 내용</span>
             <p>
-              {data && data.solution}
-              {mode === 'write' && (
+              {mode === 'read' && data && data.solution}
+              {mode !== 'read' && (
                 <textarea
-                  ref={element => {
-                    this.writeSolution = element;
-                  }}
+                  value={writeSolution}
+                  onChange={e => this.handleInputChange(e, 'writeSolution')}
                 />
               )}
             </p>
           </div>
 
-          {mode === 'write' && (
+          {mode !== 'read' && (
             <div>
               <div className="form-check-inline">
                 <label className="form-check-label">
