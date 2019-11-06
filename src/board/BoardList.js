@@ -82,7 +82,7 @@ export default class BoardList extends Component {
         {list.map(ele => {
           return (
             <Makelist
-              key={ele.id+1}
+              key={ele.id + 1}
               created={ele.createdAt}
               postname={ele.postname}
               id={ele.id}
