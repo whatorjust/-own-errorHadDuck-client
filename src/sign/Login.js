@@ -27,15 +27,6 @@ export default class Login extends Component {
     this.handleLoginBtn = this.handleLoginBtn.bind(this);
   }
 
-  handleSubmit = e => {
-    e.preventDefault();
-    this.props.form.validateFields((err, values) => {
-      if (!err) {
-        console.log('Received values of form: ', values);
-      }
-    });
-  };
-
   handleInputChange = (e, stateKey) => {
     this.setState({ [stateKey]: e.target.value });
   };
