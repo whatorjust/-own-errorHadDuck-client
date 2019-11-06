@@ -1,6 +1,12 @@
 import React from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import { Layout } from 'antd';
+import 'antd/dist/antd.css';
+import './sign.css';
+import WrappedRegistrationForm from './SignupForm';
+
+const { Header, Footer, Content } = Layout;
 
 export default function Signup(props) {
   const signupEndPoint = `${process.env.REACT_APP_API_KEY}/users/signup`;
@@ -54,30 +60,37 @@ export default function Signup(props) {
 
   return (
     <div>
-      <div>회원가입</div>
-      <p>
-        <label htmlFor="id">아이디</label>
-        <InputData idval="id" typestyle="text" />
-      </p>
-      <p>
-        <label htmlFor="pwd">비밀번호</label>
-        <InputData idval="pwd" typestyle="password" />
-      </p>
-      <p>
-        <label htmlFor="email">이메일</label>
-        <InputData idval="email" typestyle="text" />
-      </p>
-      <div id="chicken">
-        <br />
-      </div>
-      <div>
-        <button onClick={postData} type="button">
-          확인
-        </button>
-        <Link to="/">
-          <button type="button">취소</button>
-        </Link>
-      </div>
+      <Layout>
+        <Header>Header</Header>
+        <Content>
+          <WrappedRegistrationForm />
+          <div>회원가입</div>
+          <p>
+            <label htmlFor="id">아이디</label>
+            <InputData idval="id" typestyle="text" />
+          </p>
+          <p>
+            <label htmlFor="pwd">비밀번호</label>
+            <InputData idval="pwd" typestyle="password" />
+          </p>
+          <p>
+            <label htmlFor="email">이메일</label>
+            <InputData idval="email" typestyle="text" />
+          </p>
+          <div id="chicken">
+            <br />
+          </div>
+          <div>
+            <button onClick={postData} type="button">
+              확인
+            </button>
+            <Link to="/">
+              <button type="button">취소</button>
+            </Link>
+          </div>
+        </Content>
+        <Footer>Footer</Footer>
+      </Layout>
     </div>
   );
 }
