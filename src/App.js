@@ -61,7 +61,14 @@ export default class App extends Component {
             />
             <Route path="/signupsuccess" exact component={SignSuccess} />
             <Route path="/signup" exact component={Signup} />
-            <Route path="/boardList/:mode" exact component={BoardList} />
+            <Route
+              path="/boardList/:mode"
+              render={props => (
+                // eslint-disable-next-line react/jsx-props-no-spreading
+                <BoardList key={props.match.params.mode} {...props} />
+              )}
+            />
+
             <Route path="/overview" exact component={Overview} />
 
             {/* only write mode */}
