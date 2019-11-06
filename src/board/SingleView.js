@@ -1,6 +1,7 @@
 /* eslint-disable no-nested-ternary */
 import React, { Component } from 'react';
 import { Redirect, withRouter } from 'react-router-dom';
+import { Tag, Input, Icon, List, Card } from 'antd';
 
 const axios = require('axios');
 
@@ -17,7 +18,9 @@ class SingleView extends Component {
       data: null,
       isErr: null,
       writeKeyWords: [],
-      writeRefers: []
+      writeRefers: [],
+      inputVisible: false,
+      inputValue: ''
     };
     this.handleLeftBtn = this.handleLeftBtn.bind(this);
     this.handleAddKeyword = this.handleAddKeyword.bind(this);
@@ -87,23 +90,45 @@ class SingleView extends Component {
       });
   }
 
+  showInput = () => {
+    this.setState({ inputVisible: true }, () => this.saveInputRef.focus());
+  };
+
+  handleInputConfirm = () => {
+    const { inputValue } = this.state;
+    let { writeKeyWords } = this.state;
+    if (inputValue && writeKeyWords.indexOf(inputValue) === -1) {
+      writeKeyWords = [...writeKeyWords, inputValue];
+    }
+    this.setState(prev => {
+      return {
+        ...prev,
+        writeKeyWords,
+        inputVisible: false,
+        inputValue: ''
+      };
+    });
+  };
+
+  handleClose = removedTag => {
+    const { writeKeyWords } = this.state;
+    const newWriteKeyWords = writeKeyWords.filter(tag => tag !== removedTag);
+    this.setState(prev => {
+      return { ...prev, writeKeyWords: newWriteKeyWords };
+    });
+  };
+
+  handleCloseRef = removedTag => {
+    const { writeRefers } = this.state;
+    const newwriteRefers = writeRefers.filter(tag => tag !== removedTag);
+    this.setState(prev => {
+      return { ...prev, writeRefers: newwriteRefers };
+    });
+  };
+
   handleInputChange = (e, stateKey) => {
     this.setState({ [stateKey]: e.target.value });
   };
-
-  handleAddKeyword() {
-    const { value } = this.keyword;
-
-    if (value === '') return;
-
-    this.keyword.value = '';
-
-    this.setState(prev => {
-      return {
-        writeKeyWords: [...prev.writeKeyWords, value]
-      };
-    });
-  }
 
   handleAddRef() {
     const referurl = this.refUrl.value;
@@ -117,6 +142,20 @@ class SingleView extends Component {
     this.setState(prev => {
       return {
         writeRefers: [...prev.writeRefers, { referurl, understand }]
+      };
+    });
+  }
+
+  handleAddKeyword() {
+    const { value } = this.keyword;
+
+    if (value === '') return;
+
+    this.keyword.value = '';
+
+    this.setState(prev => {
+      return {
+        writeKeyWords: [...prev.writeKeyWords, value]
       };
     });
   }
@@ -281,7 +320,9 @@ class SingleView extends Component {
       writePostname,
       writePostCode,
       writeSolution,
-      needName
+      needName,
+      inputVisible,
+      inputValue
     } = this.state;
     const leftBtn =
       mode === 'read' ? '수정' : mode === 'write' ? '작성 완료' : '수정 완료';
@@ -328,38 +369,56 @@ class SingleView extends Component {
 
           <div>
             <span>검색 키워드</span>
-            {mode !== 'read' && (
-              <div>
-                <input
-                  type="text"
-                  ref={element => {
-                    this.keyword = element;
-                  }}
-                />
-                <button type="button" onClick={this.handleAddKeyword}>
-                  +
-                </button>
-              </div>
+
+            {mode !== 'read' && inputVisible && (
+              <Input
+                ref={element => {
+                  this.saveInputRef = element;
+                }}
+                type="text"
+                size="small"
+                style={{ width: 78 }}
+                value={inputValue}
+                onChange={e => this.handleInputChange(e, 'inputValue')}
+                onBlur={this.handleInputConfirm}
+                onPressEnter={this.handleInputConfirm}
+              />
+            )}
+            {mode !== 'read' && !inputVisible && (
+              <Tag
+                onClick={this.showInput}
+                style={{ background: '#fff', borderStyle: 'dashed' }}
+              >
+                <Icon type="plus" /> 키워드 추가
+              </Tag>
             )}
 
             <ul>
-              {mode !== 'read' && writeKeyWords.map(ele => <li>{ele}</li>)}
+              {mode !== 'read' &&
+                writeKeyWords.map(ele => (
+                  <Tag key={ele} closable onClose={() => this.handleClose(ele)}>
+                    {ele}
+                  </Tag>
+                ))}
+
               {mode === 'read' &&
                 data &&
                 data.Poskeys.length !== 0 &&
-                data.Poskeys.map(ele => <li>{ele.Keyword.keyword}</li>)}
+                data.Poskeys.map(ele => (
+                  <Tag key={ele.Keyword.keyword} closable={false}>
+                    {ele.Keyword.keyword}
+                  </Tag>
+                ))}
             </ul>
           </div>
           <hr />
 
           <div>
             <div>
-              <span>참고한 페이지</span>
+              <span>참고한 페이지</span>{' '}
               {mode !== 'read' && (
                 <div>
-                  <button type="button" onClick={this.handleAddRef}>
-                    +
-                  </button>
+                  <Icon type="plus" onClick={this.handleAddRef} />
                   <ul>
                     <li>
                       url :{' '}
@@ -372,32 +431,55 @@ class SingleView extends Component {
                     </li>
                     <li>
                       이해한 내용 :{' '}
-                      <input
-                        type="text"
+                      <textarea
                         ref={element => {
                           this.refUnderstand = element;
                         }}
                       />
                     </li>
-                    {writeRefers.map(ele => (
-                      <ul>
-                        <li>url : {ele.referurl}</li>
-                        <li>이해한 내용 : {ele.understand}</li>
-                      </ul>
-                    ))}
+                    <List
+                      grid={{
+                        gutter: 16,
+                        xs: 1,
+                        sm: 2,
+                        md: 4,
+                        lg: 4,
+                        xl: 6,
+                        xxl: 3
+                      }}
+                      dataSource={writeRefers}
+                      renderItem={item => (
+                        <List.Item>
+                          <Icon
+                            type="delete"
+                            onClick={() => this.handleCloseRef(item)}
+                          />
+                          <Card title={item.referurl}>{item.understand}</Card>
+                        </List.Item>
+                      )}
+                    />
                   </ul>
                 </div>
               )}
-
-              {mode === 'read' &&
-                data &&
-                data.Refers.length !== 0 &&
-                data.Refers.map(ele => (
-                  <ul>
-                    <li>url : {ele.referurl}</li>
-                    <li>이해한 내용 : {ele.understand}</li>
-                  </ul>
-                ))}
+              {mode === 'read' && data && data.Refers.length !== 0 && (
+                <List
+                  grid={{
+                    gutter: 16,
+                    xs: 1,
+                    sm: 2,
+                    md: 4,
+                    lg: 4,
+                    xl: 6,
+                    xxl: 3
+                  }}
+                  dataSource={data.Refers}
+                  renderItem={item => (
+                    <List.Item>
+                      <Card title={item.referurl}>{item.understand}</Card>
+                    </List.Item>
+                  )}
+                />
+              )}
             </div>
           </div>
           <hr />
