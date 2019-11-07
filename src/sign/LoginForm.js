@@ -1,20 +1,19 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Form, Icon, Input, Button, Checkbox, message } from 'antd';
+import { Form, Icon, Input, Button, message } from 'antd';
 import axios from 'axios';
 
 class LoginForm extends Component {
   handleSubmit = e => {
-    const { handleVarietyState, handleLoginState, form } = this.props;
+    const { handleLoginState, form } = this.props;
     const instance = axios.create({
       timeout: 1000
     });
+
     e.preventDefault();
+
     form.validateFields((err, values) => {
       if (!err) {
-        // values.username
-        // values.password
-
         instance
           .post('/users/login', {
             username: values.username,
@@ -27,21 +26,16 @@ class LoginForm extends Component {
           .catch(({ response }) => {
             if (response.status === 500) {
               message.error('서버에서 에러가 발생하였습니다');
-              handleVarietyState('serverErr', true);
-              // this.setState({ serverErr: true });
               return;
             }
+
             if (response.status === 400) {
               if (response.data.msg === 'username') {
                 message.error('존재하지 않는 ID입니다.');
-                handleVarietyState('noid', true);
-                // this.setState({ noid: true });
                 return;
               }
               if (response.data.msg === 'password') {
                 message.error('비밀번호가 틀렸습니다.');
-                handleVarietyState('nopw', true);
-                // this.setState({ nopw: true });
               }
             }
           });
@@ -50,7 +44,10 @@ class LoginForm extends Component {
   };
 
   render() {
-    const { getFieldDecorator } = this.props.form;
+    const {
+      form: { getFieldDecorator }
+    } = this.props;
+
     return (
       <Form onSubmit={this.handleSubmit} className="login-form">
         <Form.Item>
@@ -75,10 +72,6 @@ class LoginForm extends Component {
           )}
         </Form.Item>
         <Form.Item>
-          {getFieldDecorator('remember', {
-            valuePropName: 'checked',
-            initialValue: true
-          })(<Checkbox>로그인 정보 기억</Checkbox>)}
           <Button
             type="primary"
             htmlType="submit"
