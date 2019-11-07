@@ -25,7 +25,7 @@ class RegistrationForm extends Component {
   handleSubmit = e => {
     const signupEndPoint = `${process.env.REACT_APP_API_KEY}/users/signup`;
     const handleNext = () => {
-      this.props.history.push('/'); // 지금 this.history없어용
+      this.props.history.push('/');
     };
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
@@ -41,7 +41,7 @@ class RegistrationForm extends Component {
             message.success(
               '회원가입을 축하드립니다! 잠시 후 로그인 페이지로 이동합니다.'
             );
-            setTimeout(handleNext, 2000); //27번 라인에 있습니다. history push 안되는 상태입니다.
+            setTimeout(handleNext, 2000);
           })
 
           .catch(({ response: { data: { msg } } }) => {
