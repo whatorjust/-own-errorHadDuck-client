@@ -1,5 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Card, Col, Row, Tooltip, Button } from 'antd';
+import moment from 'moment';
+import 'moment/locale/ko';
 
 export default function BoardThumbNail(props) {
   let routeJ = '';
@@ -9,6 +12,10 @@ export default function BoardThumbNail(props) {
   const clearData = Data.map(ele => {
     return ele.postname;
   });
+  const created = Data.map(ele => {
+    return ele.createdAt;
+  });
+  moment.updateLocale('ko', null);
 
   if (type === 'entire') {
     routeJ = '/boardlist/entire';
@@ -24,17 +31,63 @@ export default function BoardThumbNail(props) {
     <p>
       <div>
         <div>
-          <Link to={routeJ}>{listHead} </Link>
+          <Link to={routeJ}>
+            {' '}
+            <Button type="primary">{listHead}</Button>
+          </Link>
         </div>
-        <Link to={singleview + Data[0].id}>
-          <div>{clearData[0] || '최근 글이 없덕!'}</div>
-        </Link>
-        <Link to={clearData[1] ? singleview + Data[1].id : '/'}>
-          <div>{clearData[1] || '최근 글이 없덕!'}</div>
-        </Link>
-        <Link to={clearData[2] ? singleview + Data[2].id : '/overview'}>
-          <div>{clearData[2] || '최근 글이 없덕!'}</div>
-        </Link>
+        <div style={{ background: '#ECECEC', padding: '30px' }}>
+          <Row gutter={16}>
+            <Col span={8}>
+              <Card
+                title={
+                  <Tooltip
+                    title={moment(created[0]).format('YYYY-MM-DD HH:mm:ss')}
+                  >
+                    <span>{moment(created[0]).fromNow()}</span>
+                  </Tooltip>
+                }
+                bordered={false}
+              >
+                <Link to={singleview + Data[0].id}>
+                  <div>{clearData[0] || '최근 글이 없덕!'}</div>
+                </Link>
+              </Card>
+            </Col>
+            <Col span={8}>
+              <Card
+                title={
+                  <Tooltip
+                    title={moment(created[1]).format('YYYY-MM-DD HH:mm:ss')}
+                  >
+                    <span>{moment(created[1]).fromNow()}</span>
+                  </Tooltip>
+                }
+                bordered={false}
+              >
+                <Link to={clearData[1] ? singleview + Data[1].id : '/'}>
+                  <div>{clearData[1] || '최근 글이 없덕!'}</div>
+                </Link>
+              </Card>
+            </Col>
+            <Col span={8}>
+              <Card
+                title={
+                  <Tooltip
+                    title={moment(created[2]).format('YYYY-MM-DD HH:mm:ss')}
+                  >
+                    <span>{moment(created[2]).fromNow()}</span>
+                  </Tooltip>
+                }
+                bordered={false}
+              >
+                <Link to={clearData[2] ? singleview + Data[2].id : '/overview'}>
+                  <div>{clearData[2] || '최근 글이 없덕!'}</div>
+                </Link>
+              </Card>
+            </Col>
+          </Row>
+        </div>
       </div>
     </p>
   );
