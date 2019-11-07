@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Button, Input, Row, Col } from 'antd';
 import BotMsg from './BotMsg';
 import UserMsg from './UserMsg';
 
@@ -35,6 +36,9 @@ export default class ChatBot extends Component {
 
   handleSendClick = () => {
     const { input, chats } = this.state;
+
+    if (input === '') return;
+
     const newChats = [...chats, <UserMsg value={input} />];
 
     // save to localStorage
@@ -68,35 +72,35 @@ export default class ChatBot extends Component {
     const { input, chats } = this.state;
 
     return (
-      <div className="mx-auto container col-8 m-3">
-        <div className="p-3" style={{ overflowY: 'scroll', height: '600px' }}>
-          {chats}
+      <div>
+        <Row type="flex" justify="center">
+          <Col span={14} style={{ overflowY: 'scroll', height: '600px' }}>
+            {chats}
 
-          {/* for auto scroll down */}
-          <div
-            ref={element => {
-              this.chatBottom = element;
-            }}
-          />
-        </div>
+            {/* for auto scroll down */}
+            <div
+              ref={element => {
+                this.chatBottom = element;
+              }}
+            />
+          </Col>
+        </Row>
 
-        <div className="d-flex justify-content-center mx-auto form-group row m-3">
-          <input
-            className="form-control col-10"
-            type="text"
-            value={input}
-            onChange={this.handleInputChange}
-            onKeyDown={this.handleEnter}
-          />
-
-          <button
-            type="button"
-            className="btn btn-outline-warning btn-md"
-            onClick={this.handleSendClick}
-          >
-            전송
-          </button>
-        </div>
+        <Row type="flex" justify="center" style={{ margin: '5px 0 0 15px' }}>
+          <Col span={13}>
+            <Input
+              size="large"
+              value={input}
+              onChange={this.handleInputChange}
+              onKeyDown={this.handleEnter}
+            />
+          </Col>
+          <Col span={2}>
+            <Button type="primary" size="large" onClick={this.handleSendClick}>
+              전송
+            </Button>
+          </Col>
+        </Row>
       </div>
     );
   }

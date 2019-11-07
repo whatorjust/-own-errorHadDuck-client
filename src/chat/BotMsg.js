@@ -1,19 +1,17 @@
 import React from 'react';
+import { Row, Col } from 'antd';
 import rubber from '../img/rubber-duck.png';
 
 export default function BotMsg() {
   return (
-    <div className="media p-3">
-      <img
-        src={rubber}
-        alt="rubber-duck"
-        className="mr-3 mt-3 rounded-circle"
-        style={{ width: '60px' }}
-      />
-      <div className="media-body">
+    <Row type="flex">
+      <Col>
+        <img src={rubber} alt="rubber-duck" style={{ width: '80px' }} />
+      </Col>
+      <Col style={{ paddingLeft: '10px' }}>
         <h4>러버덕</h4>
-        <span>꽥꽥!</span>
-      </div>
-    </div>
+        <p>꽥꽥!</p>
+      </Col>
+    </Row>
   );
 }
