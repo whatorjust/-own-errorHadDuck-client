@@ -1,19 +1,17 @@
 import React from 'react';
+import { Row, Col } from 'antd';
 import penguin from '../img/penguin.png';
 
 export default function UserMsg({ value }) {
   return (
-    <div className="media p-1">
-      <div className="media-body text-right">
-        <h4>펭수</h4>
+    <Row type="flex" justify="end">
+      <Col span={8} style={{ textAlign: 'end', paddingRight: '10px' }}>
+        <h4>펭이</h4>
         <p>{value}</p>
-      </div>
-      <img
-        src={penguin}
-        alt="user"
-        className="ml-3 mt-3 rounded-circle"
-        style={{ width: '60px' }}
-      />
-    </div>
+      </Col>
+      <Col>
+        <img src={penguin} alt="user" style={{ width: '80px' }} />
+      </Col>
+    </Row>
   );
 }
