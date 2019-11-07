@@ -1,22 +1,26 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
-// import Err404 from '../Err404';
+// import { Link } from 'react-router-dom';
+import Makelist from './Makelist';
+// import Err404 from '../Err404'; 사용하지 않는것 같아 주석처리하였습니다.
 
-function Makelist(props) {
-  const { id } = props;
-  const { postname } = props;
-  const { created } = props;
-  const { iscomplete } = props;
-  const idNum = `/singleview/${id}`;
-  return (
-    <Link to={idNum}>
-      <div>{iscomplete === true ? 'completed' : 'incompleted'}</div>
-      <div>{postname}</div>
-      <div>{created}</div>
-    </Link>
-  );
-}
+//Makelist 컴포넌트를 따로 뺐습니다.
+//링크기능은 따로 뺀 컴포넌트에서 구현 부탁드립니다.
+
+// function Makelist(props) {
+//   const { id } = props;
+//   const { postname } = props;
+//   const { created } = props;
+//   const { iscomplete } = props;
+//   const idNum = `/singleview/${id}`;
+//   return (
+//     <Link to={idNum}>
+//       <div>{iscomplete === true ? 'completed' : 'incompleted'}</div>
+//       <div>{postname}</div>
+//       <div>{created}</div>
+//     </Link>
+//   );
+// }
 
 export default class BoardList extends Component {
   constructor(props) {
@@ -82,7 +86,7 @@ export default class BoardList extends Component {
         {list.map(ele => {
           return (
             <Makelist
-              key={ele.id+1}
+              key={ele.id + 1}
               created={ele.createdAt}
               postname={ele.postname}
               id={ele.id}

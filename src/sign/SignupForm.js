@@ -1,5 +1,15 @@
 import React, { Component } from 'react';
-import { Form, Input, Tooltip, Icon, Button, AutoComplete } from 'antd';
+import {
+  Form,
+  Input,
+  Tooltip,
+  Icon,
+  Button,
+  AutoComplete,
+  message
+} from 'antd';
+import { Link, withRouter } from 'react-router-dom';
+import axios from 'axios';
 
 const AutoCompleteOption = AutoComplete.Option;
 
@@ -13,12 +23,34 @@ class RegistrationForm extends Component {
   }
 
   handleSubmit = e => {
+    const signupEndPoint = `${process.env.REACT_APP_API_KEY}/users/signup`;
+    const handleNext = () => {
+      this.props.history.push('/');
+    };
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        console.log('Received values of form: ', values);
         //{email: "aab@naver.com", password: "11", confirm: "11", username: "1"}
-        //이거 이용해서 request보내고 처리하시면 될 듯 합니다! 아이디 및 미입력 검증은 완료. 서버 리스폰스 처리 & 페이지 이동 부탁드립니다.
+        axios
+          .post(signupEndPoint, {
+            username: values.username,
+            password: values.password,
+            email: values.email
+          })
+          .then(() => {
+            message.success(
+              '회원가입을 축하드립니다! 잠시 후 로그인 페이지로 이동합니다.'
+            );
+            setTimeout(handleNext, 2000);
+          })
+
+          .catch(({ response: { data: { msg } } }) => {
+            if (msg === 'email') {
+              message.error('email이 존재합니다.');
+            } else if (msg === 'username') {
+              message.error('아이디가 존재합니다.');
+            }
+          });
       }
     });
   };
@@ -164,6 +196,9 @@ class RegistrationForm extends Component {
           <Button type="primary" htmlType="submit">
             가입하기
           </Button>
+          <Link to="/">
+            <Button style={{ marginLeft: 8 }}>취소</Button>
+          </Link>
         </Form.Item>
       </Form>
     );
@@ -171,7 +206,7 @@ class RegistrationForm extends Component {
 }
 
 const WrappedRegistrationForm = Form.create({ name: 'register' })(
-  RegistrationForm
+  withRouter(RegistrationForm)
 );
 
 export default WrappedRegistrationForm;
