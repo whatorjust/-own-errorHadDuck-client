@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Redirect, Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 
 import { Layout } from 'antd';
 
@@ -33,7 +33,9 @@ export default class Login extends Component {
   // };
 
   handleVarietyState = (key, value) => {
-    this.state[key] = value;
+    const copyState = JSON.parse(JSON.stringify(this.state));
+    copyState[key] = value;
+    this.setState(copyState);
   };
 
   // handleLoginBtn = () => {
