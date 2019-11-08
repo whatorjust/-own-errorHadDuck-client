@@ -1,9 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, Icon } from 'antd';
+import cookie from 'react-cookies';
 
 export default function Nav({ handleLogout }) {
   const { SubMenu } = Menu;
+  const destroyCookie = () => {
+    cookie.remove('oreo');
+    handleLogout();
+  };
 
   return (
     <Menu mode="horizontal">
@@ -64,7 +69,7 @@ export default function Nav({ handleLogout }) {
           </span>
         }
       >
-        <Menu.Item key="/" onClick={handleLogout}>
+        <Menu.Item key="/" onClick={destroyCookie}>
           <Link to="/">
             <Icon type="logout" />
             로그아웃
