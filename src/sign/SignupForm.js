@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React, { Component } from 'react';
 import {
   Form,
@@ -23,12 +24,13 @@ class RegistrationForm extends Component {
   }
 
   handleSubmit = e => {
+    const { history, form } = this.props;
     const signupEndPoint = `${process.env.REACT_APP_API_KEY}/users/signup`;
     const handleNext = () => {
-      this.props.history.push('/');
+      history.push('/');
     };
     e.preventDefault();
-    this.props.form.validateFieldsAndScroll((err, values) => {
+    form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         // {email: "aab@naver.com", password: "11", confirm: "11", username: "1"}
         axios
@@ -57,7 +59,9 @@ class RegistrationForm extends Component {
 
   handleConfirmBlur = e => {
     const { value } = e.target;
-    this.setState({ confirmDirty: this.state.confirmDirty || !!value });
+    this.setState(prev => {
+      return { confirmDirty: prev.confirmDirty || !!value };
+    });
   };
 
   compareToFirstPassword = (rule, value, callback) => {
@@ -70,8 +74,9 @@ class RegistrationForm extends Component {
   };
 
   validateToNextPassword = (rule, value, callback) => {
+    const { confirmDirty } = this.state;
     const { form } = this.props;
-    if (value && this.state.confirmDirty) {
+    if (value && confirmDirty) {
       form.validateFields(['confirm'], { force: true });
     }
     callback();
@@ -90,8 +95,10 @@ class RegistrationForm extends Component {
   };
 
   render() {
-    const { getFieldDecorator } = this.props.form;
     const { autoCompleteResult } = this.state;
+    const {
+      form: { getFieldDecorator }
+    } = this.props;
 
     const formItemLayout = {
       labelCol: {

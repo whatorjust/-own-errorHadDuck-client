@@ -11,7 +11,15 @@ export default function Nav({ handleLogout }) {
   };
 
   return (
-    <Menu mode="horizontal">
+    <Menu
+      mode="horizontal"
+      style={{
+        textAlign: 'center',
+        width: '100%',
+        marginTop: '7px',
+        opacity: '0.7'
+      }}
+    >
       <Menu.Item key="overview">
         <Link to="/overview">
           <Icon type="appstore" />

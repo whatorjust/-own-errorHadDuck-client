@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import { Row, Col } from 'antd';
 import Prism from 'prismjs';
 import './prism.css';
-import { Row, Col } from 'antd';
 
 export default class CodeHighlight extends Component {
   componentDidMount() {
