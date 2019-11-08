@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
-import { Layout } from 'antd';
+import { Layout, Icon, BackTop } from 'antd';
 import Login from './sign/Login';
 import SignSuccess from './sign/SignSuccess';
 import Signup from './sign/Signup';
@@ -13,7 +13,6 @@ import Err404 from './Err404';
 import Err500 from './Err500';
 import './App.css';
 
-const { Header, Footer, Sider, Content } = Layout;
 export default class App extends Component {
   constructor(props) {
     super(props);
@@ -41,6 +40,7 @@ export default class App extends Component {
 
   render() {
     const { isLogin } = this.state;
+    const { Header, Footer, Content } = Layout;
 
     return (
       <Router>
@@ -89,8 +89,17 @@ export default class App extends Component {
                 <Route path="/chatbot" exact component={ChatBot} />
               </Switch>
             </div>
+            <BackTop />
           </Content>
-          <Footer>Footer</Footer>
+          <Footer>
+            <p>
+              <Icon type="number" /> TEAM QUACK
+            </p>
+            <p>
+              <Icon type="team" /> 이해준, 조아라, 박강호
+            </p>
+            <p>Copyright (c) 2019 에러해결했덕</p>
+          </Footer>
         </Layout>
       </Router>
     );
