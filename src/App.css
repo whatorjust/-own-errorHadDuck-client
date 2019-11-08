@@ -1,5 +1,9 @@
+@import '~antd/dist/antd.css';
 .App {
   text-align: center;
+}
+.ant-form .ant-form-horizontal .login-form {
+  margin-left: auto;
 }
 
 .App-logo {
