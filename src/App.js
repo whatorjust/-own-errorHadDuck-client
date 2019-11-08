@@ -40,8 +40,8 @@ export default class App extends Component {
 
   render() {
     const { isLogin } = this.state;
+    // window.alert(isLogin);
     const { Header, Footer, Content } = Layout;
-
     return (
       <Router>
         <Layout>
@@ -77,7 +77,7 @@ export default class App extends Component {
                 <Route
                   path="/singleview"
                   exact
-                  component={() => <SingleView />}
+                  component={() => <SingleView isLogin={isLogin} />}
                 />
 
                 {/* update, delete, read mode */}
@@ -86,7 +86,11 @@ export default class App extends Component {
                   exact
                   component={SingleView}
                 />
-                <Route path="/chatbot" exact component={ChatBot} />
+                <Route
+                  path="/chatbot"
+                  exact
+                  component={() => <ChatBot isLogin={isLogin} />}
+                />
               </Switch>
             </div>
             <BackTop />

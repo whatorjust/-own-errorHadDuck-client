@@ -350,7 +350,10 @@ class SingleView extends Component {
       mode === 'read' ? '삭제' : mode === 'write' ? '작성 취소' : '수정 취소';
     const { Text, Title } = Typography;
     const { TextArea } = Input;
-
+    const { history } = this.props;
+    if (!JSON.parse(localStorage.getItem('isLogin'))) {
+      history.push('/');
+    }
     return (
       <div>
         <div>

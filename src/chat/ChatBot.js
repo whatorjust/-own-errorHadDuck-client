@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { Button, Input, Row, Col } from 'antd';
+import { BrowserRouter as Redirect, withRouter } from 'react-router-dom';
+
 import BotMsg from './BotMsg';
 import UserMsg from './UserMsg';
 
-export default class ChatBot extends Component {
+class ChatBot extends Component {
   constructor(props) {
     super(props);
     this.state = { chats: [<BotMsg />], input: '' };
@@ -12,7 +14,6 @@ export default class ChatBot extends Component {
   componentDidMount() {
     const { chats } = this.state;
     const userChats = JSON.parse(localStorage.getItem('chats'));
-
     // get prev chats from localStorage & save to the state
     if (chats.length === 1 && userChats !== null) {
       const arr = [];
@@ -69,8 +70,11 @@ export default class ChatBot extends Component {
   }
 
   render() {
+    const { history } = this.props;
+    if (!JSON.parse(localStorage.getItem('isLogin'))) {
+      history.push('/');
+    }
     const { input, chats } = this.state;
-
     return (
       <div>
         <Row type="flex" justify="center">
@@ -105,3 +109,5 @@ export default class ChatBot extends Component {
     );
   }
 }
+
+export default withRouter(ChatBot);
