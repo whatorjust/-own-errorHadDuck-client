@@ -1,17 +1,28 @@
+import 'antd/dist/antd.css';
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Layout, Icon, BackTop } from 'antd';
-import Login from './sign/Login';
-import SignSuccess from './sign/SignSuccess';
-import Signup from './sign/Signup';
-import BoardList from './board/BoardList';
-import Overview from './board/Overview';
-import SingleView from './board/SingleView';
+import unload from 'unload';
+import cookie from 'react-cookies';
+import { Login, SignSuccess, Signup } from './sign/sign';
+// import Login from './sign/Login';
+// import SignSuccess from './sign/SignSuccess';
+// import Signup from './sign/Signup';
+import { BoardList, Overview, SingleView } from './board/board';
+// import BoardList from './board/BoardList';
+// import Overview from './board/Overview';
+// import SingleView from './board/SingleView';
 import ChatBot from './chat/ChatBot';
-import Nav from './Nav';
-import Err404 from './Err404';
-import Err500 from './Err500';
+import { Nav, Err404, Err500 } from './src';
+// import Nav from './Nav';
+// import Err404 from './Err404';
+// import Err500 from './Err500';
 import './App.css';
+
+unload.add(() => {
+  cookie.remove('oreo');
+  localStorage.clear();
+});
 
 export default class App extends Component {
   constructor(props) {
