@@ -30,7 +30,7 @@ class RegistrationForm extends Component {
     e.preventDefault();
     this.props.form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        //{email: "aab@naver.com", password: "11", confirm: "11", username: "1"}
+        // {email: "aab@naver.com", password: "11", confirm: "11", username: "1"}
         axios
           .post(signupEndPoint, {
             username: values.username,
