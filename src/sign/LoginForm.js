@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Form, Icon, Input, Button, message, Skeleton, Row, Col } from 'antd';
 import axios from 'axios';
 import logos from '../img/logo.png';
+import 'antd/dist/antd.css';
 
 class LoginForm extends Component {
   constructor(props) {
