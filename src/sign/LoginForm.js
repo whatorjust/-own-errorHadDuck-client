@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Form, Icon, Input, Button, message, Skeleton } from 'antd';
+import { Form, Icon, Input, Button, message, Skeleton, Row, Col } from 'antd';
 import axios from 'axios';
+import logos from '../img/logo.png';
 
 class LoginForm extends Component {
   constructor(props) {
@@ -67,6 +68,11 @@ class LoginForm extends Component {
           <Skeleton active />
         ) : (
           <Form onSubmit={this.handleSubmit} className="login-form">
+            <img
+              src={logos}
+              alt="logo"
+              style={{ width: '300px', marginBottom: '50px' }}
+            />
             <Form.Item>
               {getFieldDecorator('username', {
                 rules: [{ required: true, message: '아이디를 입력해주세요' }]

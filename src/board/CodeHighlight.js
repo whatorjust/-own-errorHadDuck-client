@@ -15,7 +15,7 @@ export default class CodeHighlight extends Component {
       <Row>
         <Col span="20" offset={2}>
           <pre>
-            <code className="language-html">{postcode}</code>
+            <code className="language-js">{postcode}</code>
           </pre>
         </Col>
       </Row>

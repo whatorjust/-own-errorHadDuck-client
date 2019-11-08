@@ -44,9 +44,9 @@ export default class Overview extends Component {
     });
     return (
       <div>
-        <BoardThumbNail Data={entireData} type="entire" />
-        <BoardThumbNail Data={incompletedData} type="incompleted" />
-        <BoardThumbNail Data={completedData} type="completed" />
+        <BoardThumbNail Data={entireData.reverse()} type="entire" />
+        <BoardThumbNail Data={incompletedData.reverse()} type="incompleted" />
+        <BoardThumbNail Data={completedData.reverse()} type="completed" />
       </div>
     );
   }

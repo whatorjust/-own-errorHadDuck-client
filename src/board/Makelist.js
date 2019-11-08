@@ -26,9 +26,13 @@ export default class Makelist extends Component {
         author={iscomplete === true ? <p>해결된 에러</p> : <p>미해결 에러</p>}
         avatar={
           iscomplete === true ? (
-            <Icon type="check-circle" theme="twoTone" />
+            <Icon type="check-circle" theme="twoTone" twoToneColor="#9C64A6" />
           ) : (
-            <Icon type="question-circle" theme="twoTone" />
+            <Icon
+              type="question-circle"
+              theme="twoTone"
+              twoToneColor="#9C64A6"
+            />
           )
         }
         content={<p>{postname}</p>}
