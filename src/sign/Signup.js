@@ -5,7 +5,7 @@ import WrappedRegistrationForm from './SignupForm';
 
 const { Header, Footer, Content } = Layout;
 
-export default function Signup(props) {
+export default function Signup() {
   return (
     <div>
       <Layout>
