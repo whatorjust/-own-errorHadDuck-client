@@ -31,10 +31,15 @@ export default function BoardThumbNail(props) {
     <p>
       <div>
         <div>
-          <Link to={routeJ}>
-            {' '}
-            <Button type="primary">{listHead}</Button>
-          </Link>
+          {clearData.length === 0 ? (
+            <Button type="primary" disabled>
+              {listHead}
+            </Button>
+          ) : (
+            <Link to={routeJ}>
+              <Button type="primary">{listHead}</Button>
+            </Link>
+          )}
         </div>
         <div style={{ background: '#ECECEC', padding: '30px' }}>
           <Row gutter={16}>
@@ -49,7 +54,7 @@ export default function BoardThumbNail(props) {
                 }
                 bordered={false}
               >
-                 <Link to={clearData[0] ? singleview + Data[0].id : '/'}>
+                <Link to={clearData[0] ? singleview + Data[0].id : '/'}>
                   <div>{clearData[0] || '최근 글이 없덕!'}</div>
                 </Link>
               </Card>

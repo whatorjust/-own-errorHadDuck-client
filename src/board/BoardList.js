@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import { List } from 'antd';
 import Makelist from './Makelist';
 
 export default class BoardList extends Component {
@@ -14,7 +15,9 @@ export default class BoardList extends Component {
     const { match } = this.props;
     const { history } = this.props;
     const instance = axios.create({
-      timeout: 1000
+      withCredentials: true,
+      timeout: 1000,
+      baseURL: process.env.REACT_APP_API_KEY
     });
 
     if (match.params.mode === 'entire') {
@@ -62,9 +65,12 @@ export default class BoardList extends Component {
   render() {
     const { list } = this.state;
     return (
-      <div>
-        {list.map(ele => {
-          return (
+      <List
+        itemLayout="horizontal"
+        dataSource={list.reverse()}
+        renderItem={ele => (
+          <List.Item>
+            {' '}
             <Makelist
               key={ele.id + 1}
               created={ele.createdAt}
@@ -72,9 +78,9 @@ export default class BoardList extends Component {
               id={ele.id}
               iscomplete={ele.iscomplete}
             />
-          );
-        })}
-      </div>
+          </List.Item>
+        )}
+      />
     );
   }
 }

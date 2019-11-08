@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Input, Row, Col } from 'antd';
-import { BrowserRouter as Redirect, withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 
 import BotMsg from './BotMsg';
 import UserMsg from './UserMsg';
@@ -78,7 +78,7 @@ class ChatBot extends Component {
     return (
       <div>
         <Row type="flex" justify="center">
-          <Col span={14} style={{ overflowY: 'scroll', height: '600px' }}>
+          <Col span={14} style={{ overflowY: 'scroll', height: '50vh' }}>
             {chats}
 
             {/* for auto scroll down */}

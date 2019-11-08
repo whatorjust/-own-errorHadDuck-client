@@ -11,7 +11,9 @@ export default class Overview extends Component {
   componentDidMount() {
     const { history } = this.props;
     const instance = axios.create({
-      timeout: 1000
+      withCredentials: true,
+      timeout: 1000,
+      baseURL: process.env.REACT_APP_API_KEY
     });
 
     instance
@@ -42,9 +44,9 @@ export default class Overview extends Component {
     });
     return (
       <div>
-        <BoardThumbNail Data={entireData} type="entire" />
-        <BoardThumbNail Data={incompletedData} type="incompleted" />
-        <BoardThumbNail Data={completedData} type="completed" />
+        <BoardThumbNail Data={entireData.reverse()} type="entire" />
+        <BoardThumbNail Data={incompletedData.reverse()} type="incompleted" />
+        <BoardThumbNail Data={completedData.reverse()} type="completed" />
       </div>
     );
   }
