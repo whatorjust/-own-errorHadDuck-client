@@ -36,7 +36,8 @@ class SingleView extends Component {
       writeKeyWords: [],
       writeRefers: [],
       inputVisible: false,
-      inputValue: ''
+      inputValue: '',
+      checked: false
     };
     this.handleLeftBtn = this.handleLeftBtn.bind(this);
     this.handleAddKeyword = this.handleAddKeyword.bind(this);
@@ -151,9 +152,6 @@ class SingleView extends Component {
 
     if (referurl === '' || understand === '') return;
 
-    // this.refUrl.value = '';
-    // this.refUnderstand.value = '';
-
     this.setState(prev => {
       return {
         writeRefers: [...prev.writeRefers, { referurl, understand }],
@@ -240,7 +238,7 @@ class SingleView extends Component {
           postname: writePostname,
           postcode: writePostCode,
           solution: writeSolution,
-          iscomplete: checked === undefined ? false : checked
+          iscomplete: checked
         },
         keyword: writeKeyWords,
         refer: writeRefers
@@ -268,8 +266,6 @@ class SingleView extends Component {
     }
 
     if (mode === 'read') {
-      // TODO: 키워드랑 ref는 어떻게 수정하지..? 메테리얼로 삭제하고 수정은 없고 새로 생성만?
-
       this.setState({
         mode: 'update',
         writePostname: data.postname,
@@ -301,7 +297,7 @@ class SingleView extends Component {
           postname: writePostname,
           postcode: writePostCode,
           solution: writeSolution,
-          iscomplete: !this.unsolveRadio.checked
+          iscomplete: checked
         },
         keyword: writeKeyWords,
         refer: writeRefers
@@ -343,7 +339,8 @@ class SingleView extends Component {
       inputVisible,
       inputValue,
       referurl,
-      understand
+      understand,
+      checked
     } = this.state;
     const leftBtn =
       mode === 'read' ? '수정' : mode === 'write' ? '작성 완료' : '수정 완료';
@@ -570,7 +567,11 @@ class SingleView extends Component {
                   <Radio.Group defaultValue="unsolve" size="large">
                     <Radio.Button
                       value="unsolve"
-                      onClick={() => this.setState({ checked: false })}
+                      onClick={() => {
+                        this.setState(prev => {
+                          return { ...prev, checked: false };
+                        });
+                      }}
                       ref={element => {
                         this.unsolveRadio = element;
                       }}
@@ -579,7 +580,11 @@ class SingleView extends Component {
                     </Radio.Button>
                     <Radio.Button
                       value="solved"
-                      onClick={() => this.setState({ checked: true })}
+                      onClick={() => {
+                        this.setState(prev => {
+                          return { ...prev, checked: true };
+                        });
+                      }}
                     >
                       해결
                     </Radio.Button>
