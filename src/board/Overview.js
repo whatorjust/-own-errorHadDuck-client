@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
+import { Divider } from 'antd';
 import axios from 'axios';
 import BoardThumbNail from './BoardThumbNail';
 
 export default class Overview extends Component {
   constructor(props) {
     super(props);
-    this.state = { list: [null] };
+    this.state = { list: [null], isErr: false };
   }
 
   componentDidMount() {
@@ -26,14 +27,16 @@ export default class Overview extends Component {
         });
       })
       .catch(() => {
-        history.push('/404page');
+        this.setState({ isErr: true });
       });
   }
 
   render() {
-    const { list } = this.state;
-    if (list[0] === null) {
-      return '목록을 불러오는 중입니다.';
+    const { list, isErr } = this.state;
+    if (list[0] === null || isErr) {
+      return (
+        <Divider>작성한 글이 하나도 없네요. 새로운 글을 작성해보세요!</Divider>
+      );
     }
     const entireData = list;
     const incompletedData = list.filter(ele => {

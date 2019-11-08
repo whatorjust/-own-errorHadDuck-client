@@ -23,7 +23,7 @@ class RegistrationForm extends Component {
   }
 
   handleSubmit = e => {
-    const signupEndPoint = `/users/signup`;
+    const signupEndPoint = `${process.env.REACT_APP_API_KEY}/users/signup`;
     const handleNext = () => {
       this.props.history.push('/');
     };
