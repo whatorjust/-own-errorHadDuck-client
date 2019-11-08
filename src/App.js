@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
 import { Layout, Icon, BackTop } from 'antd';
+import unload from 'unload';
+import cookie from 'react-cookies';
 import Login from './sign/Login';
 import SignSuccess from './sign/SignSuccess';
 import Signup from './sign/Signup';
@@ -12,6 +14,11 @@ import Nav from './Nav';
 import Err404 from './Err404';
 import Err500 from './Err500';
 import './App.css';
+
+unload.add(() => {
+  cookie.remove('oreo');
+  localStorage.clear();
+});
 
 export default class App extends Component {
   constructor(props) {
