@@ -49,7 +49,7 @@ export default function BoardThumbNail(props) {
                 }
                 bordered={false}
               >
-                <Link to={singleview + Data[0].id}>
+                 <Link to={clearData[0] ? singleview + Data[0].id : '/'}>
                   <div>{clearData[0] || '최근 글이 없덕!'}</div>
                 </Link>
               </Card>
