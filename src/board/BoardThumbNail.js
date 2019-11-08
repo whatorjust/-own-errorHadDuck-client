@@ -26,7 +26,7 @@ export default function BoardThumbNail(props) {
         <div>
           <Link to={routeJ}>{listHead} </Link>
         </div>
-        <Link to={singleview + Data[0].id}>
+        <Link to={clearData[0] ? singleview + Data[0].id : '/'}>
           <div>{clearData[0] || '최근 글이 없덕!'}</div>
         </Link>
         <Link to={clearData[1] ? singleview + Data[1].id : '/'}>
