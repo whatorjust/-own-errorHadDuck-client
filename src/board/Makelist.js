@@ -25,7 +25,6 @@ export default class Makelist extends Component {
         actions={actions}
         author={iscomplete === true ? <p>해결된 에러</p> : <p>미해결 에러</p>}
         avatar={
-          //완료한 질문과 미완료 질문 icon 다르게 했습니다.
           iscomplete === true ? (
             <Icon type="check-circle" theme="twoTone" />
           ) : (
