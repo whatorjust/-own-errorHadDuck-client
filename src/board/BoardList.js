@@ -14,7 +14,9 @@ export default class BoardList extends Component {
     const { match } = this.props;
     const { history } = this.props;
     const instance = axios.create({
-      timeout: 1000
+      withCredentials: true,
+      timeout: 1000,
+      baseURL: process.env.REACT_APP_API_KEY
     });
 
     if (match.params.mode === 'entire') {

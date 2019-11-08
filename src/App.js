@@ -40,7 +40,6 @@ export default class App extends Component {
 
   render() {
     const { isLogin } = this.state;
-    // window.alert(isLogin);
     const { Header, Footer, Content } = Layout;
     return (
       <Router>

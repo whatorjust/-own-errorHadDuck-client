@@ -12,7 +12,6 @@ export default class Err404 extends Component {
   }
 
   handleNext = () => {
-    console.log(this.props);
     const { history } = this.props;
     history.push('/');
   };

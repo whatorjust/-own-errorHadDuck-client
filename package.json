@@ -2,7 +2,6 @@
   "name": "errorhadduck-client",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://13.125.254.202:5000",
   "dependencies": {
     "antd": "^3.25.0",
     "axios": "^0.19.0",

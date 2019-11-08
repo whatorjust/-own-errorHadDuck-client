@@ -11,7 +11,9 @@ export default class Overview extends Component {
   componentDidMount() {
     const { history } = this.props;
     const instance = axios.create({
-      timeout: 1000
+      withCredentials: true,
+      timeout: 1000,
+      baseURL: process.env.REACT_APP_API_KEY
     });
 
     instance

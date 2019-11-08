@@ -22,7 +22,8 @@ const axios = require('axios');
 
 const instance = axios.create({
   withCredentials: true,
-  timeout: 1000
+  timeout: 1000,
+  baseURL: process.env.REACT_APP_API_KEY
 });
 
 class SingleView extends Component {

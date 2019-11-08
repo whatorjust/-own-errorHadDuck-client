@@ -1,16 +1,25 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Form, Icon, Input, Button, message } from 'antd';
+import { Form, Icon, Input, Button, message, Skeleton } from 'antd';
 import axios from 'axios';
 
 class LoginForm extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { isLoding: false };
+  }
+
   handleSubmit = e => {
     const { handleLoginState, form } = this.props;
+
     const instance = axios.create({
-      timeout: 1000
+      withCredentials: true,
+      timeout: 1000,
+      baseURL: process.env.REACT_APP_API_KEY
     });
 
     e.preventDefault();
+    this.setState({ isLoding: true });
 
     form.validateFields((err, values) => {
       if (!err) {
@@ -22,8 +31,11 @@ class LoginForm extends Component {
           .then(() => {
             localStorage.setItem('isLogin', true);
             handleLoginState();
+            this.setState({ isLoding: false });
           })
           .catch(({ response }) => {
+            this.setState({ isLoding: false });
+
             if (response.status === 500) {
               message.error('서버에서 에러가 발생하였습니다');
               return;
@@ -44,44 +56,55 @@ class LoginForm extends Component {
   };
 
   render() {
+    const { isLoding } = this.state;
     const {
       form: { getFieldDecorator }
     } = this.props;
 
     return (
-      <Form onSubmit={this.handleSubmit} className="login-form">
-        <Form.Item>
-          {getFieldDecorator('username', {
-            rules: [{ required: true, message: '아이디를 입력해주세요' }]
-          })(
-            <Input
-              prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              placeholder="아이디"
-            />
-          )}
-        </Form.Item>
-        <Form.Item>
-          {getFieldDecorator('password', {
-            rules: [{ required: true, message: '비밀번호를 입력해주세요' }]
-          })(
-            <Input
-              prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
-              type="password"
-              placeholder="비밀번호"
-            />
-          )}
-        </Form.Item>
-        <Form.Item>
-          <Button
-            type="primary"
-            htmlType="submit"
-            className="login-form-button"
-          >
-            로그인
-          </Button>
-          혹은 <Link to="/signup">회원가입</Link>
-        </Form.Item>
-      </Form>
+      <div>
+        {isLoding ? (
+          <Skeleton active />
+        ) : (
+          <Form onSubmit={this.handleSubmit} className="login-form">
+            <Form.Item>
+              {getFieldDecorator('username', {
+                rules: [{ required: true, message: '아이디를 입력해주세요' }]
+              })(
+                <Input
+                  prefix={
+                    <Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />
+                  }
+                  placeholder="아이디"
+                />
+              )}
+            </Form.Item>
+            <Form.Item>
+              {getFieldDecorator('password', {
+                rules: [{ required: true, message: '비밀번호를 입력해주세요' }]
+              })(
+                <Input
+                  prefix={
+                    <Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />
+                  }
+                  type="password"
+                  placeholder="비밀번호"
+                />
+              )}
+            </Form.Item>
+            <Form.Item>
+              <Button
+                type="primary"
+                htmlType="submit"
+                className="login-form-button"
+              >
+                로그인
+              </Button>
+              혹은 <Link to="/signup">회원가입</Link>
+            </Form.Item>
+          </Form>
+        )}
+      </div>
     );
   }
 }
