@@ -1,7 +1,22 @@
 /* eslint-disable no-nested-ternary */
 import React, { Component } from 'react';
 import { Redirect, withRouter } from 'react-router-dom';
-import { Tag, Input, Icon, List, Card } from 'antd';
+import {
+  Tag,
+  Input,
+  Icon,
+  List,
+  Card,
+  Typography,
+  Button,
+  Row,
+  Col,
+  Divider,
+  Popconfirm,
+  message,
+  Radio
+} from 'antd';
+import CodeHighlight from './CodeHighlight';
 
 const axios = require('axios');
 
@@ -131,17 +146,18 @@ class SingleView extends Component {
   };
 
   handleAddRef() {
-    const referurl = this.refUrl.value;
-    const understand = this.refUnderstand.value;
+    const { referurl, understand } = this.state;
 
     if (referurl === '' || understand === '') return;
 
-    this.refUrl.value = '';
-    this.refUnderstand.value = '';
+    // this.refUrl.value = '';
+    // this.refUnderstand.value = '';
 
     this.setState(prev => {
       return {
-        writeRefers: [...prev.writeRefers, { referurl, understand }]
+        writeRefers: [...prev.writeRefers, { referurl, understand }],
+        referurl: '',
+        understand: ''
       };
     });
   }
@@ -168,6 +184,7 @@ class SingleView extends Component {
       instance
         .delete(`/posts/${data.id}`)
         .then(() => {
+          message.success('삭제되었습니다. 메인으로 돌아갑니다.');
           history.push('/overview');
         })
         .catch(({ response }) => {
@@ -199,7 +216,8 @@ class SingleView extends Component {
       writePostname,
       writeSolution,
       writePostCode,
-      data
+      data,
+      checked
     } = this.state;
     const { history } = this.props;
 
@@ -221,7 +239,7 @@ class SingleView extends Component {
           postname: writePostname,
           postcode: writePostCode,
           solution: writeSolution,
-          iscomplete: !this.unsolveRadio.checked
+          iscomplete: checked === undefined ? false : checked
         },
         keyword: writeKeyWords,
         refer: writeRefers
@@ -322,12 +340,16 @@ class SingleView extends Component {
       writeSolution,
       needName,
       inputVisible,
-      inputValue
+      inputValue,
+      referurl,
+      understand
     } = this.state;
     const leftBtn =
       mode === 'read' ? '수정' : mode === 'write' ? '작성 완료' : '수정 완료';
     const cancleBtn =
       mode === 'read' ? '삭제' : mode === 'write' ? '작성 취소' : '수정 취소';
+    const { Text, Title } = Typography;
+    const { TextArea } = Input;
 
     return (
       <div>
@@ -335,63 +357,66 @@ class SingleView extends Component {
           {isErr === '404' && <Redirect to="/404page" />}
           {isErr === '500' && <Redirect to="/500page" />}
           <div>
-            <span>
+            <Text mark>
               {mode === 'read' && data && (data.iscomplete ? '해결' : '미해결')}
-            </span>
+            </Text>
           </div>
           <h1>
             {mode === 'read' && data && data.postname}
             {mode !== 'read' && (
-              <input
-                placeholder="제목"
-                value={writePostname}
-                onChange={e => this.handleInputChange(e, 'writePostname')}
-              />
+              <div>
+                <Divider orientation="left">
+                  <Title level={3}>
+                    <Icon type="code" /> 제목
+                  </Title>
+                </Divider>
+                <Row>
+                  <Col span={20} offset={1}>
+                    <Input
+                      size="large"
+                      placeholder="제목"
+                      value={writePostname}
+                      onChange={e => this.handleInputChange(e, 'writePostname')}
+                    />
+                  </Col>
+                </Row>
+              </div>
             )}
           </h1>
           {needName && (
             <span style={{ color: 'red' }}>제목은 필수 항목입니다.</span>
           )}
           <div>
-            <span>에러 코드</span>
+            <Divider orientation="left">
+              <Title level={4}>
+                <Icon type="code" /> 에러 코드
+              </Title>
+            </Divider>
             <div>
-              <pre>
-                <code>{mode === 'read' && data && data.postcode}</code>
-              </pre>
+              {mode === 'read' && data && data.postcode && (
+                <CodeHighlight postcode={data.postcode} />
+              )}
+
               {mode !== 'read' && (
-                <textarea
-                  value={writePostCode}
-                  onChange={e => this.handleInputChange(e, 'writePostCode')}
-                />
+                <Row>
+                  <Col span={20} offset={1}>
+                    <TextArea
+                      autoSize={{ minRows: 15, maxRows: 15 }}
+                      value={writePostCode}
+                      onChange={e => this.handleInputChange(e, 'writePostCode')}
+                    />
+                  </Col>
+                </Row>
               )}
             </div>
           </div>
 
           <div>
-            <span>검색 키워드</span>
-
-            {mode !== 'read' && inputVisible && (
-              <Input
-                ref={element => {
-                  this.saveInputRef = element;
-                }}
-                type="text"
-                size="small"
-                style={{ width: 78 }}
-                value={inputValue}
-                onChange={e => this.handleInputChange(e, 'inputValue')}
-                onBlur={this.handleInputConfirm}
-                onPressEnter={this.handleInputConfirm}
-              />
-            )}
-            {mode !== 'read' && !inputVisible && (
-              <Tag
-                onClick={this.showInput}
-                style={{ background: '#fff', borderStyle: 'dashed' }}
-              >
-                <Icon type="plus" /> 키워드 추가
-              </Tag>
-            )}
+            <Divider orientation="left">
+              <Title level={4}>
+                <Icon type="tag" /> 검색 키워드
+              </Title>
+            </Divider>
 
             <ul>
               {mode !== 'read' &&
@@ -401,138 +426,209 @@ class SingleView extends Component {
                   </Tag>
                 ))}
 
-              {mode === 'read' &&
-                data &&
-                data.Poskeys.length !== 0 &&
-                data.Poskeys.map(ele => (
-                  <Tag key={ele.Keyword.keyword} closable={false}>
-                    {ele.Keyword.keyword}
-                  </Tag>
-                ))}
+              {mode === 'read' && data && data.Poskeys.length !== 0 && (
+                <Row>
+                  <Col span={20} offset={1}>
+                    {data.Poskeys.map(ele => (
+                      <Tag key={ele.Keyword.keyword} closable={false}>
+                        {ele.Keyword.keyword}
+                      </Tag>
+                    ))}
+                  </Col>
+                </Row>
+              )}
+              {mode !== 'read' && inputVisible && (
+                <Input
+                  ref={element => {
+                    this.saveInputRef = element;
+                  }}
+                  type="text"
+                  size="small"
+                  style={{ width: 78 }}
+                  value={inputValue}
+                  onChange={e => this.handleInputChange(e, 'inputValue')}
+                  onBlur={this.handleInputConfirm}
+                  onPressEnter={this.handleInputConfirm}
+                />
+              )}
+              {mode !== 'read' && !inputVisible && (
+                <Tag
+                  onClick={this.showInput}
+                  style={{ background: '#fff', borderStyle: 'dashed' }}
+                >
+                  <Icon type="plus" /> 키워드 추가
+                </Tag>
+              )}
             </ul>
           </div>
-          <hr />
 
           <div>
             <div>
-              <span>참고한 페이지</span>{' '}
+              <Divider orientation="left">
+                <Title level={4}>
+                  <Icon type="link" /> 참고
+                </Title>
+              </Divider>
               {mode !== 'read' && (
                 <div>
-                  <Icon type="plus" onClick={this.handleAddRef} />
-                  <ul>
-                    <li>
-                      url :{' '}
-                      <input
-                        type="text"
-                        ref={element => {
-                          this.refUrl = element;
-                        }}
+                  <Row>
+                    <Col span={20} offset={1}>
+                      <Button
+                        block
+                        type="primary"
+                        icon="plus"
+                        size="middle"
+                        onClick={this.handleAddRef}
                       />
-                    </li>
-                    <li>
-                      이해한 내용 :{' '}
-                      <textarea
-                        ref={element => {
-                          this.refUnderstand = element;
-                        }}
+                    </Col>
+                  </Row>
+                  <Row>
+                    <Col span={20} offset={1}>
+                      {' '}
+                      <Input
+                        addonBefore="URL"
+                        value={referurl}
+                        onChange={e => this.handleInputChange(e, 'referurl')}
                       />
-                    </li>
-                    <List
-                      grid={{
-                        gutter: 16,
-                        xs: 1,
-                        sm: 2,
-                        md: 4,
-                        lg: 4,
-                        xl: 6,
-                        xxl: 3
-                      }}
-                      dataSource={writeRefers}
-                      renderItem={item => (
-                        <List.Item>
-                          <Icon
-                            type="delete"
-                            onClick={() => this.handleCloseRef(item)}
-                          />
-                          <Card title={item.referurl}>{item.understand}</Card>
-                        </List.Item>
-                      )}
-                    />
-                  </ul>
+                    </Col>
+                  </Row>
+                  <Row style={{ marginBottom: '30px' }}>
+                    <Col span={20} offset={1}>
+                      <Input
+                        addonBefore="이해한 내용"
+                        value={understand}
+                        onChange={e => this.handleInputChange(e, 'understand')}
+                      />
+                    </Col>
+                  </Row>
+
+                  <List
+                    grid={{
+                      gutter: 16
+                    }}
+                    dataSource={writeRefers}
+                    renderItem={item => (
+                      <List.Item>
+                        <Row>
+                          <Col span={20} offset={1}>
+                            <Button
+                              block
+                              type="danger"
+                              icon="delete"
+                              size="middle"
+                              onClick={() => this.handleCloseRef(item)}
+                            />
+                          </Col>
+                        </Row>
+                        <Row>
+                          <Col span={20} offset={1}>
+                            <Card title={item.referurl} size="small">
+                              {item.understand}
+                            </Card>
+                          </Col>
+                        </Row>
+                      </List.Item>
+                    )}
+                  />
                 </div>
               )}
               {mode === 'read' && data && data.Refers.length !== 0 && (
                 <List
                   grid={{
-                    gutter: 16,
-                    xs: 1,
-                    sm: 2,
-                    md: 4,
-                    lg: 4,
-                    xl: 6,
-                    xxl: 3
+                    gutter: 16
                   }}
                   dataSource={data.Refers}
                   renderItem={item => (
-                    <List.Item>
-                      <Card title={item.referurl}>{item.understand}</Card>
-                    </List.Item>
+                    <Row>
+                      <Col span={20} offset={2}>
+                        <List.Item>
+                          <Card title={item.referurl} size="small">
+                            {item.understand}
+                          </Card>
+                        </List.Item>
+                      </Col>
+                    </Row>
                   )}
                 />
               )}
             </div>
           </div>
-          <hr />
 
           <div>
-            <span>해결한 내용</span>
+            <Divider orientation="left">
+              <Title level={4}>
+                <Icon type="bulb" /> 해결
+              </Title>
+            </Divider>
+            {mode !== 'read' && (
+              <Row>
+                <Col span={20} offset={1}>
+                  <Radio.Group defaultValue="unsolve" size="large">
+                    <Radio.Button
+                      value="unsolve"
+                      onClick={() => this.setState({ checked: false })}
+                      ref={element => {
+                        this.unsolveRadio = element;
+                      }}
+                    >
+                      미해결
+                    </Radio.Button>
+                    <Radio.Button
+                      value="solved"
+                      onClick={() => this.setState({ checked: true })}
+                    >
+                      해결
+                    </Radio.Button>
+                  </Radio.Group>
+                </Col>
+              </Row>
+            )}
             <p>
-              {mode === 'read' && data && data.solution}
+              {mode === 'read' && data && (
+                <Row>
+                  <Col span={20} offset={2}>
+                    {data.solution}
+                  </Col>
+                </Row>
+              )}
               {mode !== 'read' && (
-                <textarea
-                  value={writeSolution}
-                  onChange={e => this.handleInputChange(e, 'writeSolution')}
-                />
+                <Row>
+                  <Col span={20} offset={1}>
+                    <TextArea
+                      autoSize={{ minRows: 10, maxRows: 10 }}
+                      value={writeSolution}
+                      onChange={e => this.handleInputChange(e, 'writeSolution')}
+                    />
+                  </Col>
+                </Row>
               )}
             </p>
           </div>
-
-          {mode !== 'read' && (
-            <div>
-              <div className="form-check-inline">
-                <label className="form-check-label">
-                  <input
-                    type="radio"
-                    className="form-check-input"
-                    name="optradio"
-                    defaultChecked
-                    ref={element => {
-                      this.unsolveRadio = element;
-                    }}
-                  />
-                  미해결
-                </label>
-              </div>
-              <div className="form-check-inline">
-                <label className="form-check-label">
-                  <input
-                    type="radio"
-                    className="form-check-input"
-                    name="optradio"
-                  />
-                  해결
-                </label>
-              </div>
-            </div>
-          )}
         </div>
-
-        <button type="button" onClick={this.handleLeftBtn}>
-          {leftBtn}
-        </button>
-        <button type="button" onClick={this.handleCancleBtn}>
-          {cancleBtn}
-        </button>
+        <Divider dashed />
+        <Row type="flex" justify="center">
+          <Col span={2}>
+            <Button type="primary" onClick={this.handleLeftBtn}>
+              {leftBtn}
+            </Button>
+          </Col>
+          <Col>
+            {mode === 'read' ? (
+              <Popconfirm
+                title="삭제하시겠습니까？"
+                okText="네"
+                cancelText="아니요"
+                onConfirm={this.handleCancleBtn}
+              >
+                <Button type="danger">{cancleBtn}</Button>
+              </Popconfirm>
+            ) : (
+              <Button type="danger" onClick={this.handleCancleBtn}>
+                {cancleBtn}
+              </Button>
+            )}
+          </Col>
+        </Row>
       </div>
     );
   }
