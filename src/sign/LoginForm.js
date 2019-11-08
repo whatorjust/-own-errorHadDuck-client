@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Form, Icon, Input, Button, message } from 'antd';
 import axios from 'axios';
+import 'antd/dist/antd.css';
 
 class LoginForm extends Component {
   handleSubmit = e => {
