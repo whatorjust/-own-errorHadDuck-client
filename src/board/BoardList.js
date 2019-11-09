@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { List } from 'antd';
+import { List, Row, Col } from 'antd';
 import Makelist from './Makelist';
 
 export default class BoardList extends Component {
@@ -66,10 +66,11 @@ export default class BoardList extends Component {
     const { list } = this.state;
     return (
       <List
-        itemLayout="horizontal"
+        grid={{ gutter: 24, column: 4 }}
+        itemLayout="vertical"
         dataSource={list.reverse()}
         renderItem={ele => (
-          <List.Item>
+          <List.Item style={{ borderLeft: '1px dotted' }}>
             {' '}
             <Makelist
               key={ele.id + 1}
