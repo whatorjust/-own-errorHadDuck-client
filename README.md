@@ -1,68 +1,77 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# ERRORHADDUCK - CLIENT
 
-## Available Scripts
+> http://mysterious-journey.surge.sh > **코딩을 하면서 겪는 에러를 기록하고, 공부할 수 있는 웹 어플리케이션**
 
-In the project directory, you can run:
+> '에러해결했덕'은 개발을 하면서 마주치게 되는 문제 상황에서 재밌게 디버깅을 하며, 스스로 해결할 수있게 도와줍니다. 또한, 그 과정을 각 요소별로 기록(검색키워드,url,에러코드)할 수 있고 그 내용들을 나중에 다시 볼 수 있게 도와주는 서비스입니다. 모든 기록 내용은 각 계정별로 한정됩니다.
 
-### `npm start`
+## **Getting Started**
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### **Prerequisites**
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+- Node, npm
 
-### `npm test`
+### **Installing**
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```shell
+- on your root dir
+$ npm install
+$ npm install --global surge
+```
 
-### `npm run build`
+- [surge](https://surge.sh/help/getting-started-with-surge)
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Create `.env` file on your root dir
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+```
+REACT_APP_API_KEY=http://13.125.254.202:5000
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+- Back-end Repository : [errorHadDuck-server](https://github.com/codestates/errorHadDuck-server)
 
-### `npm run eject`
+### **Deployment**
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```shell
+- on your root dir
+$ npm run build
+$ cd build
+$ surge
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+- then sign up/in to surge
+- to see the list of deployed projects `surge list`
+- to redeploy with the same domain `surge --domain SOME_DOMAIN_NAME`
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+### **Built With**
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+- REACT : 웹 라이브러리
+- REACT_ROUTER_DOM : 라우팅 라이브러리
+- ANT DESIGN : 디자인 컴포넌트 라이브러리
 
-## Learn More
+---
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## **Component Design**
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+![component](https://i.imgur.com/G8M1yq4.jpg)
 
-### Code Splitting
+---
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+###### example
 
-### Analyzing the Bundle Size
+- signup & login
+  ![signup](https://i.imgur.com/nr60mgF.gif)
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+- write
+  ![write](https://i.imgur.com/TixfFle.gif)
 
-### Making a Progressive Web App
+- Debugging with rubber-duck
+  ![Debugging](https://i.imgur.com/mk9sZp6.gif)
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+---
 
-### Advanced Configuration
+## **We Are 'TEAM QUACK'**
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
-
-### Deployment
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
-
-### `npm run build` fails to minify
-
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+| 이름   | 스택      | TIL blog                          | github username                                |
+| ------ | --------- | --------------------------------- | ---------------------------------------------- |
+| 조아라 | front-end | https://grin-quokka.tistory.com/  | [grin-quokka ](https://github.com/grin-quokka) |
+| 박강호 | front-end | https://medium.com/@whatorjust/   | [whatorjust](https://github.com/whatorjust)    |
+| 이해준 | back-end  | https://medium.com/@0oooceanhigh/ | [liftingturn](https://github.com/liftingturn)  |

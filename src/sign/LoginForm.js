@@ -1,9 +1,9 @@
+import 'antd/dist/antd.css';
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Form, Icon, Input, Button, message, Skeleton, Row, Col } from 'antd';
+import { Form, Icon, Input, Button, message, Skeleton } from 'antd';
 import axios from 'axios';
 import logos from '../img/logo.png';
-import 'antd/dist/antd.css';
 
 class LoginForm extends Component {
   constructor(props) {
@@ -21,10 +21,11 @@ class LoginForm extends Component {
     });
 
     e.preventDefault();
-    this.setState({ isLoding: true });
 
     form.validateFields((err, values) => {
       if (!err) {
+        this.setState({ isLoding: true });
+
         instance
           .post('/users/login', {
             username: values.username,
@@ -36,8 +37,6 @@ class LoginForm extends Component {
             this.setState({ isLoding: false });
           })
           .catch(({ response }) => {
-            this.setState({ isLoding: false });
-
             if (response.status === 500) {
               message.error('서버에서 에러가 발생하였습니다');
               return;
@@ -52,7 +51,8 @@ class LoginForm extends Component {
                 message.error('비밀번호가 틀렸습니다.');
               }
             }
-          });
+          })
+          .finally(() => this.setState({ isLoding: false }));
       }
     });
   };
