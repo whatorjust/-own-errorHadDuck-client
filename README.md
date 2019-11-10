@@ -55,7 +55,9 @@ $ surge
 
 ---
 
-###### example
+###### features
+- click to watch
+[![errhadduck_features](http://img.youtube.com/vi/CjWOggbV8aA/0.jpg)](http://www.youtube.com/watch?v=CjWOggbV8aA)
 
 - signup & login
   ![signup](https://i.imgur.com/nr60mgF.gif)
